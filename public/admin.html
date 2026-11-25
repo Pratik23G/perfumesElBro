@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Orders · Perfumes El Bro</title>
+<style>
+:root{color-scheme:dark;--bg:#0f0e0d;--s:#171513;--ink:#f4f0e9;--ink2:#b9b1a4;--m:#8f8779;--line:rgba(244,240,233,.14)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{width:min(880px,100% - 32px);margin:0 auto;padding:32px 0 64px}
+h1{font:400 32px/1.1 Georgia,serif;margin:0 0 4px}p{margin:0}.m{color:var(--m);font-size:13px}
+input,button,a.b,textarea{font:inherit;color:inherit}
+input,textarea{background:var(--s);border:1px solid var(--line);border-radius:2px;padding:10px 12px;font-size:16px;width:100%}
+.b,button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border:1px solid var(--line);background:none;border-radius:2px;cursor:pointer;text-decoration:none;font-size:14px}
+.b:hover,button:hover{border-color:var(--ink)}.pri{background:var(--ink);color:var(--bg);border-color:transparent}
+.row{display:flex;gap:8px;flex-wrap:wrap}.bar{display:flex;gap:8px;margin:24px 0}
+.o{border-top:1px solid var(--line);padding:20px 0;display:grid;gap:12px}
+.top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
+.top b{font-size:18px;font-weight:500}.tag{font-size:12px;color:var(--ink2);border:1px solid var(--line);padding:2px 8px;border-radius:2px}
+.tag.paid,.tag.shipped{color:var(--bg);background:var(--ink);border-color:transparent}
+ul{margin:0;padding-left:18px;color:var(--ink2)}
+.msgs{display:grid;gap:8px;padding:12px;background:var(--s);border:1px solid var(--line)}
+.msgs .l{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.msgs .l span{min-width:120px;font-size:13px;color:var(--ink2)}
+#err{color:#e08a7a;min-height:20px;font-size:13px}
+</style>
+</head>
+<body>
+<main>
+  <h1>Orders</h1>
+  <p class="m" id="help"></p>
+  <div class="row" id="langbar" hidden><button id="lEn" type="button">English</button><button id="lEs" type="button">Español</button></div>
+  <form class="bar" id="login"><input id="tok" type="password" placeholder="Admin token" autocomplete="current-password"><button class="pri" type="submit">Open</button></form>
+  <p id="err" role="status"></p>
+  <div id="list"></div>
+</main>
+<script>
+const $ = s => document.querySelector(s);
+const money = c => '$' + (c / 100).toFixed(c % 100 ? 2 : 0);
+const digits = s => String(s || '').replace(/\D/g, '');
+const sms = (phone, body) => `sms:+${digits(phone).length === 10 ? '1' + digits(phone) : digits(phone)}?&body=${encodeURIComponent(body)}`;
+const first = n => String(n || '').trim().split(/\s+/)[0] || '';
+let data = null, tracking = {};
+let lang = localStorage.lang || 'en';
+const touch = matchMedia('(pointer:coarse)').matches;
+if (location.hash.length > 1) { localStorage.tok = decodeURIComponent(location.hash.slice(1)); history.replaceState(null, '', location.pathname); }
+const wa = (phone, body) => `https://wa.me/${digits(phone).length === 10 ? '1' + digits(phone) : digits(phone)}?text=${encodeURIComponent(body)}`;
+
+// Message templates. {} placeholders are filled per order. Edit the wording here.
+const T = {
+  received: {
+    label: 'Order received',
+    en: o => `Hello ${first(o.name)}, this is ${data.owner} from Perfumes El Bro. Thank you for your order ${o.id}:\n${o.lines}\nYour total is ${money(o.totalCents)}, with free shipping.\nTo complete it, please send ${money(o.totalCents)} by ${o.method} to ${o.handle} and write ${o.id} in the note. We ship as soon as we see the payment. If you have any questions, just reply to this message.`,
+    es: o => `Hola ${first(o.name)}, soy ${data.owner} de Perfumes El Bro. Gracias por tu pedido ${o.id}:\n${o.lines}\nTu total es ${money(o.totalCents)}, con envío gratis.\nPara completarlo, envía ${money(o.totalCents)} por ${o.method} a ${o.handle} y escribe ${o.id} en la nota. Enviamos en cuanto veamos el pago. Si tienes alguna pregunta, responde a este mensaje.`,
+  },
+  reminder: {
+    label: 'Payment reminder',
+    en: o => `Hello ${first(o.name)}, a friendly reminder from Perfumes El Bro. Your order ${o.id} (${money(o.totalCents)}) is reserved and waiting for payment by ${o.method} to ${o.handle}. Please write ${o.id} in the note. Let us know if you need any help.`,
+    es: o => `Hola ${first(o.name)}, un recordatorio amable de Perfumes El Bro. Tu pedido ${o.id} (${money(o.totalCents)}) está reservado y esperando el pago por ${o.method} a ${o.handle}. Escribe ${o.id} en la nota. Avísanos si necesitas ayuda.`,
+  },
+  paid: {
+    label: 'Payment received',
+    en: o => `Hello ${first(o.name)}, we received your payment of ${money(o.totalCents)} for order ${o.id}. Thank you. We are preparing your order and will text you the tracking number as soon as it ships.`,
+    es: o => `Hola ${first(o.name)}, recibimos tu pago de ${money(o.totalCents)} del pedido ${o.id}. Gracias. Estamos preparando tu pedido y te enviaremos el número de rastreo en cuanto salga.`,
+  },
+  shipped: {
+    label: 'Shipped',
+    en: o => `Hello ${first(o.name)}, your order ${o.id} is on its way to ${o.city}, ${o.state}.${o.track ? `\nTracking: ${o.track}` : ''}\nThank you for choosing Perfumes El Bro. We hope you love it.`,
+    es: o => `Hola ${first(o.name)}, tu pedido ${o.id} va en camino a ${o.city}, ${o.state}.${o.track ? `\nRastreo: ${o.track}` : ''}\nGracias por elegir Perfumes El Bro. Esperamos que te encante.`,
+  },
+};
+const METHOD = { awaiting_zelle: 'Zelle', awaiting_venmo: 'Venmo', awaiting_applecash: 'Apple Cash' };
+
+function ctx(o) {
+  const m = METHOD[o.status] || 'Zelle';
+  const key = { Zelle: 'zelle', Venmo: 'venmo', 'Apple Cash': 'applecash' }[m];
+  const h = data.pay[key] || data.pay.zelle;
+  return { ...o, ...(o.shipping || {}), method: m, handle: h, track: tracking[o.id] || '',
+    lines: o.items.map(i => `• ${i.qty}× ${i.name}${i.size ? ' ' + i.size : ''}`).join('\n') };
+}
+function render() {
+  const list = $('#list'); list.replaceChildren();
+  if (!data.orders.length) { list.textContent = 'No orders yet.'; return; }
+  for (const o of data.orders) {
+    const c = ctx(o), phone = o.shipping?.phone;
+    const d = document.createElement('div'); d.className = 'o';
+    const status = o.status.startsWith('awaiting') ? 'Awaiting ' + METHOD[o.status] : o.status === 'paid' ? 'Paid' : 'Shipped';
+    d.innerHTML = `<div class="top"><b></b><span class="tag ${o.status}"></span></div><div class="m"></div><ul></ul><div class="msgs"></div><div class="row"></div>`;
+    d.querySelector('b').textContent = `${o.id} · ${o.name} · ${money(o.totalCents)}`;
+    d.querySelector('.tag').textContent = status;
+    d.querySelector('.m').textContent = `${new Date(o.createdAt).toLocaleString()} · ${phone} · ${o.shipping?.address1}${o.shipping?.address2 ? ', ' + o.shipping.address2 : ''}, ${o.shipping?.city}, ${o.shipping?.state} ${o.shipping?.zip}`;
+    d.querySelector('ul').replaceChildren(...o.items.map(i => Object.assign(document.createElement('li'), { textContent: `${i.qty}× ${i.name} ${i.size}` })));
+    const box = d.querySelector('.msgs');
+    const keys = o.status.startsWith('awaiting') ? ['received', 'reminder'] : o.status === 'paid' ? ['paid', 'shipped'] : ['shipped'];
+    for (const k of keys) {
+      const l = document.createElement('div'); l.className = 'l';
+      l.innerHTML = `<span>${T[k].label}</span>`;
+      const mk = () => T[k][lang](ctx(o));
+      const links = [];
+      if (touch) { const a = document.createElement('a'); a.className = 'b pri'; a.textContent = 'Text'; links.push([a, () => sms(phone, mk())]); }
+      const w = document.createElement('a'); w.className = 'b' + (touch ? '' : ' pri'); w.textContent = 'WhatsApp'; w.target = '_blank'; w.rel = 'noopener'; links.push([w, () => wa(phone, mk())]);
+      const cp = document.createElement('button'); cp.textContent = 'Copy'; cp.onclick = async () => { await navigator.clipboard.writeText(mk()); cp.textContent = 'Copied'; setTimeout(() => cp.textContent = 'Copy', 1500); };
+      const refresh = () => links.forEach(([a, f]) => { a.href = f(); });
+      refresh();
+      l.append(...links.map(x => x[0]), cp);
+      if (k === 'shipped') {
+        const t = document.createElement('input'); t.placeholder = 'Tracking number (optional)'; t.value = tracking[o.id] || ''; t.style.maxWidth = '240px';
+        t.addEventListener('input', () => { tracking[o.id] = t.value.trim(); refresh(); });
+        l.append(t);
+      }
+      box.append(l);
+    }
+    const row = d.querySelector('.row');
+    if (o.status.startsWith('awaiting')) row.append(btn('Mark as paid', 'paid', o.id, true));
+    if (o.status === 'paid') row.append(btn('Mark as shipped', 'shipped', o.id, true));
+    list.append(d);
+  }
+}
+function btn(text, status, id, pri) {
+  const b = document.createElement('button'); b.textContent = text; if (pri) b.className = 'pri';
+  b.onclick = async () => { b.disabled = true; await fetch(`/api/orders/${id}/status`, { method: 'PATCH', headers: { 'Content-Type': 'application/json', 'x-admin-token': localStorage.tok }, body: JSON.stringify({ status }) }); load(); };
+  return b;
+}
+async function load() {
+  const r = await fetch('/api/orders', { headers: { 'x-admin-token': localStorage.tok || '' } });
+  if (!r.ok) { $('#err').textContent = r.status === 401 ? 'Wrong token, or ADMIN_TOKEN is not set on the server.' : 'Could not load orders.'; return; }
+  $('#err').textContent = ''; $('#login').hidden = true; data = await r.json(); $('#langbar').hidden = false; render();
+}
+$('#login').addEventListener('submit', e => { e.preventDefault(); localStorage.tok = $('#tok').value; load(); });
+$('#help').textContent = touch ? 'Pick the customer language, then tap Text. Messages opens with the message ready. Check it and press send.' : 'Pick the customer language, then tap WhatsApp (opens WhatsApp Web) or Copy and paste it into your phone.';
+const setLang = l => { lang = localStorage.lang = l; $('#lEn').className = l === 'en' ? 'pri' : ''; $('#lEs').className = l === 'es' ? 'pri' : ''; if (data) render(); };
+$('#lEn').onclick = () => setLang('en'); $('#lEs').onclick = () => setLang('es'); setLang(lang);
+if (localStorage.tok) load();
+setInterval(() => { if (data && !document.activeElement?.matches('input')) load(); }, 30000);
+</script>
+</body>
+</html>
+

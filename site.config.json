@@ -1,0 +1,24 @@
+{
+  "name": "Perfumes El Bro",
+  "currency": "usd",
+  "locale": "en-US",
+  "whatsapp": "16507718618",
+  "whatsappDisplay": "650 771 86 18",
+  "shippingCountries": [
+    "US"
+  ],
+  "socials": {
+    "instagram": "",
+    "tiktok": "",
+    "facebook": "",
+    "youtube": ""
+  },
+  "payments": {
+    "zelle": "650-771-8618",
+    "zelleName": "Alex Gonzalez",
+    "venmo": "650-771-8618",
+    "applecash": "650-771-8618"
+  },
+  "owner": "Alex Gonzalez",
+  "email": "Daniel3669@gmail.com"
+}

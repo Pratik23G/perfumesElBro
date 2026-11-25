@@ -1,0 +1,20 @@
+# Render.com blueprint: New > Blueprint > pick this repo. The disk keeps orders and reviews (data/store.db).
+services:
+  - type: web
+    name: perfumes-el-bro
+    runtime: docker
+    plan: starter
+    healthCheckPath: /api/config
+    disk:
+      name: data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - { key: NODE_ENV, value: production }
+      - { key: SITE_URL, sync: false }
+      - { key: STRIPE_SECRET_KEY, sync: false }
+      - { key: STRIPE_WEBHOOK_SECRET, sync: false }
+      - { key: ZELLE_ID, sync: false }
+      - { key: ZELLE_NAME, sync: false }
+      - { key: VENMO_HANDLE, sync: false }
+      - { key: ADMIN_TOKEN, generateValue: true }

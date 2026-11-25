@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Gracias — Perfumes El Bro</title>
+  <link rel="icon" type="image/png" href="/img/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .ok { min-height: 100dvh; display: grid; place-items: center; text-align: center; padding: 24px;
+      background: var(--bg); }
+    .ok img { width: 96px; height: 96px; border-radius: 2px; margin: 0 auto 24px; }
+    .ok h1 { font-size: clamp(2.4rem, 7vw, 4rem); }
+    .ok p { color: var(--ink-2); max-width: 46ch; margin: 16px auto 32px; }
+  </style>
+</head>
+<body>
+  <main class="ok">
+    <div>
+      <img src="/img/icon-512.png" alt="Perfumes El Bro">
+      <h1 id="h">Gracias por tu compra</h1>
+      <p id="p">Tu pago fue recibido. Te enviaremos la confirmación por correo y prepararemos tu pedido con mucho cuidado.</p>
+      <a class="btn btn-gold" href="/" id="b">Volver a la tienda</a>
+    </div>
+  </main>
+  <script>
+    try { localStorage.removeItem('elbro.cart'); } catch (e) {}
+    if (((navigator.language || '') + '').toLowerCase().startsWith('en')) {
+      var l = null; try { l = JSON.parse(localStorage.getItem('elbro.lang')); } catch (e) {}
+      if (l !== 'es') {
+        document.documentElement.lang = 'en';
+        document.getElementById('h').textContent = 'Thank you for your order';
+        document.getElementById('p').textContent = "Your payment was received. We'll email your confirmation and prepare your order with care.";
+        document.getElementById('b').textContent = 'Back to the shop';
+      }
+    }
+  </script>
+</body>
+</html>
