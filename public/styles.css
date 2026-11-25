@@ -547,3 +547,33 @@ button, a.btn, .chip, select { -webkit-tap-highlight-color: transparent; touch-a
   .contact-card { padding: 32px 20px; }
   .steps li { padding-block: 16px; }
 }
+
+/* palette: deep navy from the product photos, warm graphite, logo gold */
+:root { --gold: #c9a45c; --navy: #0c111a; --navy-2: #121a27; }
+#collections, #shop, #reviews { --bg: var(--navy); --surface: #121a27; --sunken: #172131; --line: rgba(236, 228, 210, .1); --line-strong: rgba(236, 228, 210, .24); background: var(--navy); }
+.brands { background: var(--navy-2); border-bottom-color: rgba(236,228,210,.1); }
+.trust { background: var(--navy); }
+.why { background: #17130e; }
+.contact { background: #0f0d0a; }
+.contact-card { background: #17130e; }
+.site-footer { background: #0a0908; }
+.brands span { color: #e9dfc8; }
+.trust-grid svg { stroke: var(--gold); }
+.card-img { background: #0a0e15; }
+.card:hover .card-img { box-shadow: 0 0 0 1px var(--gold); }
+.stars svg.on { fill: var(--gold); }
+.chip.is-on { color: var(--ink); border-bottom-color: var(--gold); }
+.add.done, .add.done:hover { background: var(--gold); color: #17130c; border-color: var(--gold); }
+.filter-n { background: var(--gold); color: #17130c; }
+
+/* gold, used in a few places only */
+.section-head h2::before { content: ""; display: block; width: 40px; height: 2px; background: var(--gold); margin-bottom: 20px; }
+.btn-light { background: var(--gold); color: #17130c; }
+.btn-light:hover { background: #d9b872; }
+.cart-count, .is-top .cart-count { background: var(--gold); color: #17130c; }
+.brands .more { color: var(--gold); border-bottom-color: var(--gold); }
+.brands .more:hover { color: #e3c585; border-color: #e3c585; }
+.steps li > span { color: var(--gold); }
+.contact-card { border-top: 2px solid var(--gold); }
+.live i { background: var(--gold); }
+.hero-tabs i::after { background: var(--gold); }
