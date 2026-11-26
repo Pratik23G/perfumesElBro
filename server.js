@@ -1,6 +1,6 @@
 import express from 'express';
 import Stripe from 'stripe';
-import { DatabaseSync } from 'node:sqlite';
+import { createClient } from '@libsql/client';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -36,7 +36,8 @@ const spinFrames = id => {
   try { return fs.readdirSync(dir).filter(f => f.endsWith('.webp')).sort().map(f => `/img/360/${id}/${f}`); } catch { return []; }
 };
 // Photos are rebuilt in place, so tag every image URL with its file time or browsers keep showing the old ones.
-const ver = rel => { try { return Math.floor(fs.statSync(path.join(__dirname, 'public', rel)).mtimeMs / 1000).toString(36); } catch { return '0'; } };
+const BUILD = (process.env.VERCEL_GIT_COMMIT_SHA || '').slice(0, 7);
+const ver = rel => { if (BUILD) return BUILD; try { return Math.floor(fs.statSync(path.join(__dirname, 'public', rel)).mtimeMs / 1000).toString(36); } catch { return '0'; } };
 const img = rel => `${rel}?v=${ver(rel)}`;
 const catalog = rawProducts.map(p => {
   // Flat pricing: $80 per bottle, $90 for Louis Vuitton. An explicit "price" in products.json wins.
@@ -59,10 +60,16 @@ const unpriced = catalog.filter(p => p.priceCents == null).length;
 if (unpriced) console.warn(`[catalog] ${unpriced}/${catalog.length} products have no price (shown as "ask on WhatsApp"). Set "price" in data/products.json.`);
 
 // ---- database ------------------------------------------------------------
-fs.mkdirSync(path.join(__dirname, 'data'), { recursive: true });
-const db = new DatabaseSync(path.join(__dirname, 'data/store.db'));
-db.exec(`
-  PRAGMA journal_mode = WAL;
+// Turso (hosted SQLite) when TURSO_DATABASE_URL is set, which is what Vercel needs because its disk is temporary.
+// Otherwise a local file, so `npm run dev` and a Render disk keep working unchanged.
+const onVercel = !!process.env.VERCEL;
+if (!process.env.TURSO_DATABASE_URL && !onVercel) fs.mkdirSync(path.join(__dirname, 'data'), { recursive: true });
+if (onVercel && !process.env.TURSO_DATABASE_URL) console.error('[db] TURSO_DATABASE_URL is not set: orders and reviews will not be saved on Vercel.');
+const db = createClient({
+  url: process.env.TURSO_DATABASE_URL || (onVercel ? 'file:/tmp/store.db' : `file:${path.join(__dirname, 'data/store.db')}`),
+  authToken: process.env.TURSO_AUTH_TOKEN || undefined,
+});
+await db.executeMultiple(`
   CREATE TABLE IF NOT EXISTS reviews (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     product_id TEXT,
@@ -84,16 +91,19 @@ db.exec(`
     created_at INTEGER NOT NULL
   );
 `);
+const sql = async (text, args = []) => (await db.execute({ sql: text, args })).rows;
 const q = {
-  insertReview: db.prepare('INSERT INTO reviews (product_id, name, rating, comment, created_at) VALUES (?, ?, ?, ?, ?)'),
-  getReview: db.prepare('SELECT * FROM reviews WHERE id = ?'),
-  deleteReview: db.prepare('DELETE FROM reviews WHERE id = ?'),
-  recent: db.prepare('SELECT * FROM reviews ORDER BY created_at DESC, id DESC LIMIT ?'),
-  byProduct: db.prepare('SELECT * FROM reviews WHERE product_id = ? ORDER BY created_at DESC, id DESC LIMIT 100'),
-  summary: db.prepare('SELECT product_id, COUNT(*) AS count, AVG(rating) AS avg FROM reviews GROUP BY product_id'),
-  upsertOrder: db.prepare(`INSERT INTO orders (id, email, name, amount_total, currency, payment_status, shipping_json, items_json, created_at)
+  insertReview: async (...a) => Number((await db.execute({ sql: 'INSERT INTO reviews (product_id, name, rating, comment, created_at) VALUES (?, ?, ?, ?, ?)', args: a })).lastInsertRowid),
+  getReview: async id => (await sql('SELECT * FROM reviews WHERE id = ?', [id]))[0],
+  deleteReview: id => sql('DELETE FROM reviews WHERE id = ?', [id]),
+  recent: limit => sql('SELECT * FROM reviews ORDER BY created_at DESC, id DESC LIMIT ?', [limit]),
+  byProduct: pid => sql('SELECT * FROM reviews WHERE product_id = ? ORDER BY created_at DESC, id DESC LIMIT 100', [pid]),
+  summary: () => sql('SELECT product_id, COUNT(*) AS count, AVG(rating) AS avg FROM reviews GROUP BY product_id'),
+  upsertOrder: (...a) => sql(`INSERT INTO orders (id, email, name, amount_total, currency, payment_status, shipping_json, items_json, created_at)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ON CONFLICT(id) DO UPDATE SET payment_status = excluded.payment_status`),
+    ON CONFLICT(id) DO UPDATE SET payment_status = excluded.payment_status`, a),
+  orders: () => sql('SELECT * FROM orders ORDER BY created_at DESC LIMIT 200'),
+  setStatus: async (status, id) => (await db.execute({ sql: 'UPDATE orders SET payment_status = ? WHERE id = ?', args: [status, id] })).rowsAffected,
 };
 const shapeReview = r => ({ id: r.id, productId: r.product_id, name: r.name, rating: r.rating, comment: r.comment, createdAt: r.created_at });
 
@@ -120,7 +130,7 @@ app.use((req, res, next) => {
 });
 
 // Stripe webhook needs the raw body, so register before express.json().
-app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), async (req, res) => {
   if (!stripe || !process.env.STRIPE_WEBHOOK_SECRET) return res.status(503).send('Webhook not configured');
   let event;
   try {
@@ -131,7 +141,7 @@ app.post('/api/stripe/webhook', express.raw({ type: 'application/json' }), (req,
   }
   if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
     const s = event.data.object;
-    q.upsertOrder.run(
+    await q.upsertOrder(
       s.id, s.customer_details?.email ?? null, s.customer_details?.name ?? null,
       s.amount_total ?? 0, s.currency ?? 'usd', s.payment_status,
       JSON.stringify(s.collected_information?.shipping_details ?? s.shipping_details ?? null),
@@ -161,21 +171,23 @@ app.get('/api/config', (_req, res) => {
 app.get('/api/products', (_req, res) => res.json(catalog));
 
 // ---- reviews API ---------------------------------------------------------
-app.get('/api/reviews', (req, res) => {
+app.get('/api/reviews', async (req, res) => {
   const { product } = req.query;
-  const rows = product ? q.byProduct.all(String(product)) : q.recent.all(60);
+  const rows = product ? await q.byProduct(String(product)) : await q.recent(60);
   res.json(rows.map(shapeReview));
 });
-app.get('/api/reviews/summary', (_req, res) => {
+app.get('/api/reviews/summary', async (_req, res) => {
   const out = {};
   let total = 0, sum = 0;
-  for (const r of q.summary.all()) {
+  for (const r of await q.summary()) {
     total += r.count; sum += r.avg * r.count;
     if (r.product_id) out[r.product_id] = { count: r.count, avg: Math.round(r.avg * 10) / 10 };
   }
   res.json({ products: out, total, avg: total ? Math.round((sum / total) * 10) / 10 : 0 });
 });
 app.get('/api/reviews/stream', (req, res) => {
+  // Serverless functions cannot hold a connection open; the page falls back to polling when this answers 204.
+  if (onVercel) return res.status(204).end();
   res.set({ 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache, no-transform', Connection: 'keep-alive', 'X-Accel-Buffering': 'no' });
   res.flushHeaders();
   res.write('retry: 3000\n\n');
@@ -193,7 +205,7 @@ function rateLimited(ip, max, windowMs) {
 }
 setInterval(() => { const now = Date.now(); for (const [k, v] of hits) if (!v.some(t => now - t < 3600e3)) hits.delete(k); }, 600e3).unref();
 
-app.post('/api/reviews', (req, res) => {
+app.post('/api/reviews', async (req, res) => {
   const b = req.body || {};
   if (b.website) return res.status(201).json({ ok: true }); // honeypot: pretend success to bots
   if (rateLimited(req.ip, 3, 3600e3)) return res.status(429).json({ error: 'rate_limited' });
@@ -203,16 +215,16 @@ app.post('/api/reviews', (req, res) => {
   const productId = b.productId ? String(b.productId) : null;
   if (!name || comment.length < 3 || !Number.isInteger(rating) || rating < 1 || rating > 5) return res.status(400).json({ error: 'invalid' });
   if (productId && !byId.has(productId)) return res.status(400).json({ error: 'unknown_product' });
-  const info = q.insertReview.run(productId, name, rating, comment, Date.now());
-  const review = shapeReview(q.getReview.get(info.lastInsertRowid));
+  const newId = await q.insertReview(productId, name, rating, comment, Date.now());
+  const review = shapeReview(await q.getReview(newId));
   broadcast('review', review);
   res.status(201).json(review);
 });
 
-app.delete('/api/reviews/:id', (req, res) => {
+app.delete('/api/reviews/:id', async (req, res) => {
   if (!isAdmin(req)) return res.status(401).json({ error: 'unauthorized' });
   const id = Number(req.params.id);
-  q.deleteReview.run(id);
+  await q.deleteReview(id);
   broadcast('review-deleted', { id });
   res.json({ ok: true });
 });
@@ -283,7 +295,7 @@ const isAdmin = req => {
   const given = String(req.get('x-admin-token') || '');
   return !!token && given.length === token.length && crypto.timingSafeEqual(Buffer.from(given), Buffer.from(token));
 };
-app.post('/api/orders/manual', (req, res) => {
+app.post('/api/orders/manual', async (req, res) => {
   const b = req.body || {};
   const method = ['venmo', 'zelle', 'applecash', 'cash'].includes(b.method) ? b.method : null;
   if (!method || !PAY[method]) return res.status(400).json({ error: 'method_unavailable' });
@@ -305,17 +317,17 @@ app.post('/api/orders/manual', (req, res) => {
   const freeOver = Number(process.env.FREE_SHIPPING_OVER_CENTS) || 0;
   const total = subtotal + (shipCents && !(freeOver && subtotal >= freeOver) ? shipCents : 0);
   const id = orderCode();
-  q.upsertOrder.run(id, customer.email || null, customer.name, total, config.currency, `awaiting_${method}`,
+  await q.upsertOrder(id, customer.email || null, customer.name, total, config.currency, `awaiting_${method}`,
     JSON.stringify(customer), lines.map(l => `${l.p.id}x${l.qty}`).join(','), Date.now());
   console.log(`[order] ${id} awaiting_${method} ${total / 100} ${customer.name} ${customer.phone}`);
   res.status(201).json({ id, method, name: customer.name, amountCents: total, handle: PAY[method], payee: method === 'zelle' ? PAY.zelleName : '',
     items: lines.map(l => ({ name: `${l.p.brand} ${l.p.name}`, qty: l.qty })) });
 });
-app.get('/api/orders', (req, res) => {
+app.get('/api/orders', async (req, res) => {
   if (!isAdmin(req)) return res.status(401).json({ error: 'unauthorized' });
   res.json({
     owner: config.owner, brand: config.brand || 'Perfumes El Bro', pay: { zelle: PAY.zelle, venmo: PAY.venmo, applecash: PAY.applecash, cash: !!PAY.cash },
-    orders: db.prepare('SELECT * FROM orders ORDER BY created_at DESC LIMIT 200').all().map(o => ({
+    orders: (await q.orders()).map(o => ({
       id: o.id, name: o.name, totalCents: o.amount_total, status: o.payment_status, createdAt: o.created_at,
       shipping: JSON.parse(o.shipping_json || 'null'),
       items: String(o.items_json || '').split(',').filter(Boolean).map(x => {
@@ -325,23 +337,27 @@ app.get('/api/orders', (req, res) => {
     })),
   });
 });
-app.patch('/api/orders/:id/status', (req, res) => {
+app.patch('/api/orders/:id/status', async (req, res) => {
   if (!isAdmin(req)) return res.status(401).json({ error: 'unauthorized' });
   const status = String(req.body?.status || '');
   if (!['paid', 'shipped'].includes(status)) return res.status(400).json({ error: 'invalid_status' });
-  const r = db.prepare('UPDATE orders SET payment_status = ? WHERE id = ?').run(status, String(req.params.id));
-  res.json({ ok: r.changes > 0 });
+  const changed = await q.setStatus(status, String(req.params.id));
+  res.json({ ok: changed > 0 });
 });
-app.patch('/api/orders/:id/paid', (req, res) => {
+app.patch('/api/orders/:id/paid', async (req, res) => {
   if (!isAdmin(req)) return res.status(401).json({ error: 'unauthorized' });
-  const r = db.prepare("UPDATE orders SET payment_status = 'paid' WHERE id = ?").run(String(req.params.id));
-  res.json({ ok: r.changes > 0 });
+  const changed = await q.setStatus('paid', String(req.params.id));
+  res.json({ ok: changed > 0 });
 });
 
 // ---- static --------------------------------------------------------------
 app.use('/img', express.static(path.join(__dirname, 'public/img'), { maxAge: '30d' }));
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'], maxAge: PROD ? '1h' : 0 }));
 
-app.listen(PORT, () => {
-  console.log(`Perfumes El Bro on ${SITE_URL}  (stripe: ${stripe ? 'on' : 'OFF - set STRIPE_SECRET_KEY'}${placeholderOn ? ', test prices ON' : ''})`);
-});
+if (!onVercel) {
+  app.listen(PORT, () => {
+    console.log(`Perfumes El Bro on ${SITE_URL}  (stripe: ${stripe ? 'on' : 'OFF - set STRIPE_SECRET_KEY'}${placeholderOn ? ', test prices ON' : ''})`);
+  });
+}
+
+export default app;

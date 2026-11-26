@@ -611,7 +611,7 @@ em.s { font-family: var(--accent); font-style: italic; font-weight: 400; letter-
 @keyframes kenburns { from { transform: scale(1); } to { transform: scale(1.05); } }
 .hero-shade { position: absolute; inset: 0; z-index: -1; background:
   linear-gradient(180deg, rgba(11,10,8,.55) 0%, rgba(11,10,8,0) 24%),
-  linear-gradient(0deg, rgba(11,10,8,.9) 0%, rgba(11,10,8,.45) 44%, rgba(11,10,8,.1) 100%); }
+  linear-gradient(0deg, rgba(11,10,8,.95) 0%, rgba(11,10,8,.82) 46%, rgba(11,10,8,.4) 70%, rgba(11,10,8,.1) 100%); }
 .hero-inner { padding-block: 0 56px; }
 h1 { font-size: clamp(2.9rem, 7.4vw, 6rem); max-width: 12ch; }
 .hero-copy .lead { color: var(--ink-2); margin-top: 20px; max-width: 30rem; }
@@ -735,3 +735,12 @@ h1 { font-size: clamp(2.9rem, 7.4vw, 6rem); max-width: 12ch; }
   .filter-btn > span:not(.filter-n) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
   .section-head { margin-bottom: 8px; }
 }
+
+/* very small phones: keep the cart button on screen */
+@media (max-width: 400px) {
+  .brand { gap: 8px; }
+  .brand-name { font-size: 15px; }
+  .bar { gap: 8px; }
+  .actions { gap: 6px; }
+}
+@media (max-width: 350px) { .brand-name { display: none; } }

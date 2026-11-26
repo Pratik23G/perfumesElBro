@@ -449,7 +449,8 @@ function connectStream() {
   });
   es.addEventListener('review-deleted', async () => { await refreshReviews(); rerenderReviewViews(); });
   let wasDown = false;
-  es.onerror = () => { wasDown = true; };
+  // No live stream (serverless hosting answers 204 and closes it): check for new reviews once a minute instead.
+  es.onerror = () => { wasDown = true; if (es.readyState === 2 && !connectStream.poll) { connectStream.poll = setInterval(async () => { if (document.hidden) return; const before = summary.total; await refreshReviews(); if (summary.total !== before) rerenderReviewViews(); }, 60000); } };
   es.onopen = async () => { if (wasDown) { wasDown = false; await refreshReviews(); rerenderReviewViews(); } };
 }
 
