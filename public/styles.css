@@ -753,8 +753,13 @@ h1 { font-size: clamp(2.9rem, 7.4vw, 6rem); max-width: 12ch; }
    Behind the copy they filled the whole screen and showed only a zoomed corner. Give them their own framed band above the copy. */
 @media (max-width: 960px) {
   .hero[data-cat="women"] .hero-spot, .hero[data-cat="unisex"] .hero-spot { inset: 112px 0 auto 0; height: auto; aspect-ratio: 5 / 4; }
-  .hero[data-cat="women"] .hero-spot img, .hero[data-cat="unisex"] .hero-spot img { object-position: 50% 28%; -webkit-mask-image: linear-gradient(180deg, #000 0, #000 70%, transparent 100%); mask-image: linear-gradient(180deg, #000 0, #000 70%, transparent 100%); }
+  .hero[data-cat="women"] .hero-spot img, .hero[data-cat="unisex"] .hero-spot img { object-position: 50% 28%; -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 18%, #000 70%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 18%, #000 70%, transparent 100%); }
   .hero[data-cat="women"] .hero-pill, .hero[data-cat="unisex"] .hero-pill { top: 72px; }
+  /* the film outside the photo band fades to the page colour in step with the photo, so nothing pops and the band has soft edges */
+  .hero[data-cat="women"] .hero-veil, .hero[data-cat="unisex"] .hero-veil { display: block; position: absolute; inset: 0; z-index: 1; background: var(--bg); opacity: 0; transition: opacity 1800ms var(--fade);
+    -webkit-mask-image: linear-gradient(180deg, #000 0, #000 112px, transparent calc(112px + 14.4vw), transparent calc(112px + 56vw), #000 calc(112px + 80vw), #000 100%);
+    mask-image: linear-gradient(180deg, #000 0, #000 112px, transparent calc(112px + 14.4vw), transparent calc(112px + 56vw), #000 calc(112px + 80vw), #000 100%); }
+  .hero[data-cat="women"].is-spot .hero-veil, .hero[data-cat="unisex"].is-spot .hero-veil { opacity: 1; }
   /* the dark band that carries the copy starts lower, so it no longer covers the photo */
   .hero[data-cat="women"] .hero-shade, .hero[data-cat="unisex"] .hero-shade { background:
     linear-gradient(180deg, rgba(11,10,8,.5) 0%, rgba(11,10,8,0) 14%),
