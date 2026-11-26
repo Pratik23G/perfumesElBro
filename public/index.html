@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Perfumes El Bro — Perfumes de diseñador desde $80</title>
+  <title>Perfumes El Bro: perfumes de diseñador desde $80</title>
   <meta name="description" content="Perfumes de Chanel, Dior, YSL, Prada, Versace, Creed y más desde $80 el frasco. Pago seguro en línea y envíos a todo el país.">
-  <meta name="theme-color" content="#0f0e0d">
+  <meta name="theme-color" content="#0b0a08">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Perfumes El Bro — Perfumes de diseñador desde $80">
+  <meta property="og:title" content="Perfumes El Bro: perfumes de diseñador desde $80">
   <meta property="og:description" content="Pago seguro, envíos a todo el país, $80 por frasco.">
   <meta property="og:image" content="/img/og.jpg">
   <meta name="twitter:card" content="summary_large_image">
@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Serif:ital@0;1&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
@@ -53,21 +53,24 @@
         <video class="hero-video is-on" data-slide="0" autoplay muted loop playsinline preload="auto" poster="/video/hero-men.jpg"><source src="/video/hero-men.mp4" type="video/mp4"></video>
         <video class="hero-video" data-slide="1" muted loop playsinline preload="none" poster="/video/hero-women.jpg"><source src="/video/hero-women.mp4" type="video/mp4"></video>
         <video class="hero-video" data-slide="2" muted loop playsinline preload="none" poster="/video/hero-unisex.jpg"><source src="/video/hero-unisex.mp4" type="video/mp4"></video>
+        <div class="hero-veil"></div>
+        <div class="hero-spot" id="heroSpot"></div>
       </div>
       <div class="hero-shade" aria-hidden="true"></div>
+      <button class="hero-pill" id="heroPill" type="button" data-act="open" hidden></button>
       <div class="wrap hero-inner">
         <div class="hero-copy" aria-live="polite">
           <h1 id="heroTitle" data-i18n="slide.0.title">Para él</h1>
           <p class="lead" id="heroLead" data-i18n="slide.0.lead">Perfumes de diseñador desde $80 el frasco.</p>
           <div class="cta-row">
-            <a class="btn btn-light" id="heroCta" href="#shop" data-g="men" data-i18n="slide.0.cta">Ver perfumes para hombre</a>
+            <a class="btn btn-gold" id="heroCta" href="#shop" data-g="men" data-i18n="slide.0.cta">Ver perfumes para hombre</a>
             <a class="btn btn-line" id="heroWa" href="#contact" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M20.5 3.5A11 11 0 0 0 3.2 17.3L2 22l4.8-1.2a11 11 0 0 0 5.2 1.3h0A11 11 0 0 0 20.5 3.5Zm-8.5 17a9 9 0 0 1-4.6-1.3l-.3-.2-2.8.7.8-2.7-.2-.3a9 9 0 1 1 7.1 3.8Zm5-6.7c-.3-.1-1.6-.8-1.9-.9s-.5-.1-.7.1-.8.9-.9 1.1-.3.2-.6.1a7.4 7.4 0 0 1-3.7-3.2c-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5l-.9-2c-.2-.5-.5-.4-.7-.4h-.6a1.2 1.2 0 0 0-.9.4 3.7 3.7 0 0 0-1.1 2.7 6.4 6.4 0 0 0 1.3 3.4 14.6 14.6 0 0 0 5.6 4.9c2.1.9 2.9.9 3.9.8a3.3 3.3 0 0 0 2.2-1.5 2.7 2.7 0 0 0 .2-1.5c-.1-.1-.3-.2-.6-.3Z"/></svg><span data-i18n="hero.wa">Pedir por WhatsApp</span></a>
           </div>
-        </div>
-        <div class="hero-tabs" role="tablist" aria-label="Colecciones" id="heroTabs">
-          <button type="button" role="tab" class="is-on" data-slide="0" aria-selected="true"><span data-i18n="f.men">Hombre</span><i></i></button>
-          <button type="button" role="tab" data-slide="1" aria-selected="false"><span data-i18n="f.women">Mujer</span><i></i></button>
-          <button type="button" role="tab" data-slide="2" aria-selected="false"><span data-i18n="f.unisex">Unisex</span><i></i></button>
+          <div class="hero-tabs" role="tablist" aria-label="Colecciones" id="heroTabs">
+            <button type="button" role="tab" class="is-on" data-slide="0" aria-selected="true"><span data-i18n="f.men">Hombre</span><i></i></button>
+            <button type="button" role="tab" data-slide="1" aria-selected="false"><span data-i18n="f.women">Mujer</span><i></i></button>
+            <button type="button" role="tab" data-slide="2" aria-selected="false"><span data-i18n="f.unisex">Unisex</span><i></i></button>
+          </div>
         </div>
       </div>
     </section>

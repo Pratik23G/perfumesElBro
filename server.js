@@ -149,6 +149,7 @@ app.get('/api/config', (_req, res) => {
     name: config.name, currency: config.currency, locale: config.locale,
     whatsapp: config.whatsapp, whatsappDisplay: config.whatsappDisplay, owner: config.owner, email: config.email,
     socials: Object.fromEntries(Object.entries(config.socials).filter(([, v]) => v)),
+    spotlight: config.spotlight || {},
     stripeEnabled: !!stripe,
     payments: { zelle: PAY.zelle, zelleName: PAY.zelleName, venmo: PAY.venmo, applecash: PAY.applecash },
     shippingCents: Number(process.env.SHIPPING_CENTS) || 0,
