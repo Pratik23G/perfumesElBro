@@ -63,7 +63,7 @@ const DICT = {
     'cart.err': 'No pudimos iniciar el pago. Inténtalo de nuevo o pide por WhatsApp.', 'cart.redirect': 'Redirigiendo a pago seguro', 'pm.ship': 'Envío a todo el país. Paga con Zelle, Apple Cash o efectivo.', 'pm.drag': 'Arrastra para girar · 360°', 'pm.pack': 'Caja y frasco', 'pm.stock': 'Nuestro stock', 'pm.imgBy': 'Imagen:',
     'p.ask': 'Consultar precio', 'p.askBtn': 'Preguntar', 'p.add': 'Añadir', 'p.test': 'precio de prueba', 'p.view': 'Ver detalles',
     'p.added': 'Añadido', 'cart.accepts': 'Aceptamos', 'pay.venmoPhone': 'En Venmo, busca este número', 'nav.menu': 'Menú', 'brands.more': 'marcas',
-    'pay.cashLead': 'Déjanos tus datos para que Alex coordine la entrega contigo. Pagas en efectivo cuando te entregue.', 'pay.cashTitle': 'Pagar en efectivo', 'pay.cashName': 'Efectivo', 'pay.cashNote': 'Pagas en efectivo cuando Alex te entregue tu pedido. Guarda tu código de pedido.', 'pay.zelleTitle': 'Pagar con Zelle', 'pay.venmoTitle': 'Pagar con Venmo', 'pay.acTitle': 'Pagar con Apple Cash', 'pay.acHow': 'Solo iPhone. Abre Mensajes, escribe a este número, toca + y elige Apple Cash. Si tienes Android, usa Zelle.', 'pay.openMsgs': 'Abrir Mensajes', 'wa.iam': 'Hola, soy', 'wa.thanks': 'Gracias.', 'pay.s1': 'Envías el pago', 'pay.s2': 'Alex te confirma por mensaje', 'pay.s3': 'Alex coordina la entrega contigo',
+    'pay.receipt': 'Te enviamos el recibo por correo.', 'pay.cashLead': 'Déjanos tus datos para que Alex coordine la entrega contigo. Pagas en efectivo cuando te entregue.', 'pay.cashTitle': 'Pagar en efectivo', 'pay.cashName': 'Efectivo', 'pay.cashNote': 'Pagas en efectivo cuando Alex te entregue tu pedido. Guarda tu código de pedido.', 'pay.zelleTitle': 'Pagar con Zelle', 'pay.venmoTitle': 'Pagar con Venmo', 'pay.acTitle': 'Pagar con Apple Cash', 'pay.acHow': 'Solo iPhone. Abre Mensajes, escribe a este número, toca + y elige Apple Cash. Si tienes Android, usa Zelle.', 'pay.openMsgs': 'Abrir Mensajes', 'wa.iam': 'Hola, soy', 'wa.thanks': 'Gracias.', 'pay.s1': 'Envías el pago', 'pay.s2': 'Alex te confirma por mensaje', 'pay.s3': 'Alex coordina la entrega contigo',
     'pay.lead': 'Déjanos tus datos de envío. Después te mostramos cómo enviar el pago.',
     'pay.name': 'Nombre completo', 'pay.phone': 'Teléfono', 'pay.email': 'Correo (opcional)', 'pay.address': 'Dirección', 'pay.address2': 'Apartamento, suite (opcional)', 'pay.city': 'Ciudad', 'pay.state': 'Estado', 'pay.zip': 'ZIP',
     'pay.place': 'Hacer pedido', 'pay.err': 'Revisa tus datos: nombre, teléfono, dirección completa y un ZIP de 5 dígitos.', 'pay.errGeneric': 'No pudimos crear el pedido. Inténtalo de nuevo o escríbenos por WhatsApp.',
@@ -114,7 +114,7 @@ const DICT = {
     'cart.err': "We couldn't start checkout. Try again or order on WhatsApp.", 'cart.redirect': 'Redirecting to secure checkout', 'pm.ship': 'Shipping nationwide. Pay with Zelle, Apple Cash or cash.', 'pm.drag': 'Drag to rotate · 360°', 'pm.pack': 'Box and bottle', 'pm.stock': 'Our stock', 'pm.imgBy': 'Image:',
     'p.ask': 'Ask for price', 'p.askBtn': 'Ask', 'p.add': 'Add', 'p.test': 'test price', 'p.view': 'View details',
     'p.added': 'Added', 'cart.accepts': 'We accept', 'pay.venmoPhone': 'In Venmo, search for this number', 'nav.menu': 'Menu', 'brands.more': 'brands',
-    'pay.cashLead': 'Leave your details so Alex can arrange delivery with you. You pay in cash when he hands it over.', 'pay.cashTitle': 'Pay in cash', 'pay.cashName': 'Cash', 'pay.cashNote': 'You pay in cash when Alex hands you your order. Keep your order code.', 'pay.zelleTitle': 'Pay with Zelle', 'pay.venmoTitle': 'Pay with Venmo', 'pay.acTitle': 'Pay with Apple Cash', 'pay.acHow': 'iPhone only. Open Messages, start a chat with this number, tap + and choose Apple Cash. On Android, use Zelle.', 'pay.openMsgs': 'Open Messages', 'wa.iam': 'Hello, this is', 'wa.thanks': 'Thank you.', 'pay.s1': 'You send the payment', 'pay.s2': 'Alex confirms by message', 'pay.s3': 'Alex arranges delivery with you',
+    'pay.receipt': 'We emailed you a receipt.', 'pay.cashLead': 'Leave your details so Alex can arrange delivery with you. You pay in cash when he hands it over.', 'pay.cashTitle': 'Pay in cash', 'pay.cashName': 'Cash', 'pay.cashNote': 'You pay in cash when Alex hands you your order. Keep your order code.', 'pay.zelleTitle': 'Pay with Zelle', 'pay.venmoTitle': 'Pay with Venmo', 'pay.acTitle': 'Pay with Apple Cash', 'pay.acHow': 'iPhone only. Open Messages, start a chat with this number, tap + and choose Apple Cash. On Android, use Zelle.', 'pay.openMsgs': 'Open Messages', 'wa.iam': 'Hello, this is', 'wa.thanks': 'Thank you.', 'pay.s1': 'You send the payment', 'pay.s2': 'Alex confirms by message', 'pay.s3': 'Alex arranges delivery with you',
     'pay.lead': 'Leave your shipping details. Next we show you how to send the payment.',
     'pay.name': 'Full name', 'pay.phone': 'Phone', 'pay.email': 'Email (optional)', 'pay.address': 'Address', 'pay.address2': 'Apartment, suite (optional)', 'pay.city': 'City', 'pay.state': 'State', 'pay.zip': 'ZIP',
     'pay.place': 'Place order', 'pay.err': 'Check your details: name, phone, full address and a 5-digit ZIP.', 'pay.errGeneric': "We couldn't create the order. Try again or message us on WhatsApp.",
@@ -612,7 +612,7 @@ function showPayDone(o) {
     el('a', { class: 'btn btn-ghost block', target: '_blank', rel: 'noopener', href: waLink([`${t('wa.iam')} ${o.name}.`, t('wa.paid'), `${t('pay.order')} ${o.id}`, ...o.items.map(i => `• ${i.qty}× ${i.name}`), amount, t('wa.thanks')].join('\n')), text: t('pay.confirm') }),
     el('a', { class: 'btn btn-ghost block', href: smsLink([`${t('wa.iam')} ${o.name}.`, t('wa.paid'), `${t('pay.order')} ${o.id}`, amount, t('wa.thanks')].join('\n')), text: t('pay.confirmSms') }),
   ];
-  payDone.replaceChildren(el('h3', { text: t('pay.doneTitle') }), el('p', { class: 'muted', text: `${t('pay.order')} ${o.id}` }), ...rows.filter(Boolean));
+  payDone.replaceChildren(el('h3', { text: t('pay.doneTitle') }), el('p', { class: 'muted', text: `${t('pay.order')} ${o.id}` }), o.receipt ? el('p', { class: 'muted small', text: t('pay.receipt') }) : null, ...rows.filter(Boolean));
   payForm.hidden = true; payDone.hidden = false;
 }
 payForm.addEventListener('submit', async e => {
@@ -622,7 +622,7 @@ payForm.addEventListener('submit', async e => {
   btn.disabled = true; msg.className = 'form-msg'; msg.textContent = '';
   try {
     const res = await fetch('/api/orders/manual', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ method: payMethod, customer, items: cartLines().map(l => ({ id: l.p.id, qty: l.qty })) }) });
+      body: JSON.stringify({ method: payMethod, customer, lang, items: cartLines().map(l => ({ id: l.p.id, qty: l.qty })) }) });
     const data = await res.json();
     if (res.status === 400 && data.error === 'invalid_customer') { msg.className = 'form-msg err'; msg.textContent = t('pay.err'); return; }
     if (!res.ok) throw new Error(data.error || res.status);

@@ -1,6 +1,7 @@
 import express from 'express';
 import Stripe from 'stripe';
 import { createClient } from '@libsql/client';
+import { sendOrderEmails, mailEnabled } from './mail.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
@@ -311,6 +312,7 @@ app.post('/api/orders/manual', async (req, res) => {
   const c = b.customer || {};
   const customer = { name: clean(c.name, 80), phone: clean(c.phone, 30), email: clean(c.email, 120),
     address1: clean(c.address1, 120), address2: clean(c.address2, 60), city: clean(c.city, 60), state: clean(c.state, 30), zip: clean(c.zip, 12) };
+  if (customer.email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(customer.email)) return res.status(400).json({ error: 'invalid_customer' });
   if (!customer.name || customer.phone.replace(/\D/g, '').length < 7 || !customer.address1 || !customer.city || !customer.state || !/^\d{5}(-\d{4})?$/.test(customer.zip))
     return res.status(400).json({ error: 'invalid_customer' });
   const shipCents = Number(process.env.SHIPPING_CENTS) || 0;
@@ -320,8 +322,11 @@ app.post('/api/orders/manual', async (req, res) => {
   await q.upsertOrder(id, customer.email || null, customer.name, total, config.currency, `awaiting_${method}`,
     JSON.stringify(customer), lines.map(l => `${l.p.id}x${l.qty}`).join(','), Date.now());
   console.log(`[order] ${id} awaiting_${method} ${total / 100} ${customer.name} ${customer.phone}`);
-  res.status(201).json({ id, method, name: customer.name, amountCents: total, handle: PAY[method], payee: method === 'zelle' ? PAY.zelleName : '',
-    items: lines.map(l => ({ name: `${l.p.brand} ${l.p.name}`, qty: l.qty })) });
+  const items = lines.map(l => ({ name: `${l.p.brand} ${l.p.name}`, qty: l.qty }));
+  const payee = method === 'zelle' ? PAY.zelleName : '';
+  const mail = await sendOrderEmails({ id, method, ...customer, items, totalCents: total, handle: PAY[method], payee, lang: b.lang === 'en' ? 'en' : 'es' },
+    { owner: config.owner, ownerEmail: (process.env.OWNER_EMAIL || config.email || '').trim(), whatsapp: config.whatsapp, whatsappDisplay: config.whatsappDisplay });
+  res.status(201).json({ id, method, name: customer.name, amountCents: total, handle: PAY[method], payee, items, receipt: mail.guest });
 });
 app.get('/api/orders', async (req, res) => {
   if (!isAdmin(req)) return res.status(401).json({ error: 'unauthorized' });
@@ -356,7 +361,7 @@ app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'], m
 
 if (!onVercel) {
   app.listen(PORT, () => {
-    console.log(`Perfumes El Bro on ${SITE_URL}  (stripe: ${stripe ? 'on' : 'OFF - set STRIPE_SECRET_KEY'}${placeholderOn ? ', test prices ON' : ''})`);
+    console.log(`Perfumes El Bro on ${SITE_URL}  (stripe: ${stripe ? 'on' : 'OFF - set STRIPE_SECRET_KEY'}, emails: ${mailEnabled ? 'on' : 'off'}${placeholderOn ? ', test prices ON' : ''})`);
   });
 }
 
