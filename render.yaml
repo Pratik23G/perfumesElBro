@@ -17,3 +17,6 @@ services:
       - { key: ZELLE_ID, sync: false }
       - { key: ZELLE_NAME, sync: false }
       - { key: ADMIN_TOKEN, generateValue: true }
+      - { key: SMTP_USER, sync: false }
+      - { key: SMTP_PASS, sync: false }
+      - { key: OWNER_EMAIL, sync: false }
