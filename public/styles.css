@@ -744,3 +744,7 @@ h1 { font-size: clamp(2.9rem, 7.4vw, 6rem); max-width: 12ch; }
   .actions { gap: 6px; }
 }
 @media (max-width: 350px) { .brand-name { display: none; } }
+
+/* header logo: the real logo again, a little larger so the crown and wordmark read */
+.site-header .brand-logo { width: 44px; height: 44px; border-radius: 10px; object-fit: cover; }
+@media (max-width: 350px) { .site-header .brand-logo { width: 40px; height: 40px; } }
