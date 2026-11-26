@@ -20,5 +20,22 @@
     "applecash": "650-771-8618"
   },
   "owner": "Alex Gonzalez",
-  "email": "Daniel3669@gmail.com"
+  "email": "Daniel3669@gmail.com",
+  "spotlight": {
+    "men": [
+      "chanel-bleu-de-chanel-parfum",
+      "gucci-guilty-parfum-homme",
+      "rabanne-invictus-victory-absolu"
+    ],
+    "women": [
+      "chanel-coco-mademoiselle",
+      "ysl-libre-berry-crush",
+      "ch-good-girl-blush"
+    ],
+    "unisex": [
+      "tom-ford-vanilla-sex",
+      "le-labo-santal-33",
+      "pdm-layton"
+    ]
+  }
 }

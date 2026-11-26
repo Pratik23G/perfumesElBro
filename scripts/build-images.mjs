@@ -101,6 +101,12 @@ async function render(srcFile, id, opts = {}) {
   const phone = /\.jpe?g$/i.test(srcFile);
   const layers = [];
   let canvas;
+  if (opts.asIs) {
+    // finished studio photo (already has its own card and floor): keep it whole, extend the edges with a blurred, darkened copy
+    const bg = await sharp(raw).resize(W, TH, { fit: 'cover' }).blur(40).modulate({ brightness: 0.6 }).toBuffer();
+    const fg = await sharp(raw).resize({ width: W, height: Math.min(TH, h) }).toBuffer();
+    return sharp(bg).composite([{ input: fg, left: 0, top: Math.max(0, Math.round((TH - Math.min(TH, h)) / 2)) }]).png().toBuffer();
+  }
   if (opts.cardAt && h < 1400) {
     // wide photo: keep it whole; the extra height is a blurred, darkened copy of it
     const bg = await sharp(raw).resize(W, TH, { fit: 'cover' }).blur(40).modulate({ brightness: 0.7 }).toBuffer();
@@ -158,7 +164,7 @@ for (const p of products) {
     const src = path.join(root, 'productImages', f);
     if (!fs.existsSync(src)) { console.error('MISSING', f); process.exitCode = 1; continue; }
     const cardAt = i === 0 ? p.cardAt : (p.altCardAt || {})[f];
-    await emit(await render(src, p.id + i, { cardAt }), i === 0 ? p.id : `${p.id}-${i + 1}`);
+    await emit(await render(src, p.id + i, { cardAt, asIs: i === 0 && p.asIs }), i === 0 ? p.id : `${p.id}-${i + 1}`);
   }
 }
 

@@ -29,8 +29,9 @@ const DICT = {
     'nav.shop': 'Tienda', 'nav.why': 'Cómo funciona', 'nav.reviews': 'Reseñas', 'nav.contact': 'Contacto',
     'hero.lead': 'Chanel, Dior, Yves Saint Laurent, Creed y Tom Ford desde $80 el frasco. Paga con Zelle o Venmo. Pide por WhatsApp o mensaje de texto.',
     'hero.wa': 'Pedir por WhatsApp',
-    'slide.0.title': 'Para él', 'slide.0.lead': 'Perfumes de diseñador desde $80 el frasco.', 'slide.0.cta': 'Ver perfumes para hombre',
-    'slide.1.title': 'Para ella', 'slide.1.lead': 'Florales, frescos y dulces. Desde $80 el frasco.', 'slide.1.cta': 'Ver perfumes para mujer',
+    'p.sealed': 'Sellado', 'hero.see': 'Ver perfume',
+    'slide.0.title': 'Para él', 'slide.0.lead': 'Originales sellados desde $80 el frasco. Directo de una persona.', 'slide.0.cta': 'Ver perfumes para hombre',
+    'slide.1.title': 'Para ella', 'slide.1.lead': 'Florales, frescos y dulces, sellados. Desde $80 el frasco.', 'slide.1.cta': 'Ver perfumes para mujer',
     'slide.2.title': 'Para todos', 'slide.2.lead': 'Aromas unisex de Tom Ford, Creed y más.', 'slide.2.cta': 'Ver perfumes unisex',
     'col.title': 'Compra por colección', 'col.cta': 'Ver colección', 'hero.tabs': 'Colecciones',
     'trust.1': 'Pago directo', 'trust.1d': 'Zelle o Venmo',
@@ -79,8 +80,9 @@ const DICT = {
     'nav.shop': 'Shop', 'nav.why': 'How it works', 'nav.reviews': 'Reviews', 'nav.contact': 'Contact',
     'hero.lead': 'Chanel, Dior, Yves Saint Laurent, Creed and Tom Ford from $80 a bottle. Pay with Zelle or Venmo. Order on WhatsApp or text.',
     'hero.wa': 'Order on WhatsApp',
-    'slide.0.title': 'For him', 'slide.0.lead': 'Designer perfumes from $80 a bottle.', 'slide.0.cta': 'Shop men',
-    'slide.1.title': 'For her', 'slide.1.lead': 'Floral, fresh and sweet. From $80 a bottle.', 'slide.1.cta': 'Shop women',
+    'p.sealed': 'Sealed', 'hero.see': 'View',
+    'slide.0.title': 'For him', 'slide.0.lead': 'Sealed originals from $80 a bottle. Straight from one person.', 'slide.0.cta': 'Shop men',
+    'slide.1.title': 'For her', 'slide.1.lead': 'Floral, fresh and sweet, sealed. From $80 a bottle.', 'slide.1.cta': 'Shop women',
     'slide.2.title': 'For everyone', 'slide.2.lead': 'Unisex scents from Tom Ford, Creed and more.', 'slide.2.cta': 'Shop unisex',
     'col.title': 'Shop by collection', 'col.cta': 'View collection', 'hero.tabs': 'Collections',
     'trust.1': 'Direct payment', 'trust.1d': 'Zelle or Venmo',
@@ -222,13 +224,13 @@ function actionBtn(p, cls = 'add') {
 
 function card(p, i) {
   const r = summary.products[p.id];
-  const img = el('img', { src: p.pack ? p.pack.thumb : p.thumb, alt: `${fullName(p)}${p.type ? ' ' + p.type : ''}`, width: 640, height: 1138, loading: i < 4 ? 'eager' : 'lazy', decoding: 'async' });
+  const img = el('img', { src: p.thumb, alt: `${fullName(p)}${p.type ? ' ' + p.type : ''}`, width: 640, height: 1138, loading: i < 4 ? 'eager' : 'lazy', decoding: 'async' });
   const done = () => img.classList.add('loaded');
   img.addEventListener('load', done);
   if (img.complete) done();
   return el('article', { class: 'card', dataset: { reveal: '' }, style: `--i:${i % 4}` },
-    el('button', { class: 'card-img' + (p.pack ? ' pack' : ''), type: 'button', dataset: { act: 'open', id: p.id }, 'aria-label': `${t('p.view')}: ${fullName(p)}` },
-      img),
+    el('button', { class: 'card-img', type: 'button', dataset: { act: 'open', id: p.id }, 'aria-label': `${t('p.view')}: ${fullName(p)}` },
+      img, el('span', { class: 'seal', text: t('p.sealed') })),
     el('div', { class: 'card-body' },
       el('div', { class: 'card-brand', text: p.brand }),
       el('h3', { class: 'card-name', text: p.name }),
@@ -299,7 +301,7 @@ function openProduct(id) {
   if (!p) return;
   modalId = id;
   const img = $('#pmImg');
-  img.src = p.pack ? p.pack.image : p.image;
+  img.src = p.image;
   img.alt = fullName(p);
   initGallery(p);
   initViewer(p);
@@ -323,19 +325,18 @@ function renderModalDynamic() {
 
 function initGallery(p) {
   const thumbs = $('#pmThumbs'), credit = $('#pmCredit');
-  stage.classList.toggle('pack', !!p.pack);
+  stage.classList.remove('pack');
   const extra = (p.gallery || []).map((src, i) => ({ src, pack: false, label: `${fullName(p)} ${i + 2}` }));
   if (!p.pack && !extra.length) { thumbs.hidden = true; credit.hidden = true; return; }
-  const views = [...(p.pack ? [{ src: p.pack.image, pack: true, label: t('pm.pack') }] : []), { src: p.image, pack: false, label: t('pm.stock') }, ...extra];
-  if (!p.pack) views.unshift(views.splice(0, 1)[0]);
+  const views = [{ src: p.image, pack: false, label: t('pm.stock') }, ...(p.pack ? [{ src: p.pack.image, pack: true, label: t('pm.pack') }] : []), ...extra];
   thumbs.replaceChildren(...views.map((v, i) => el('button', { type: 'button', class: i === 0 ? 'is-on' : '', 'aria-label': v.label, onclick: e => {
-    $('#pmImg').src = v.src; stage.classList.toggle('pack', v.pack);
+    $('#pmImg').src = v.src; stage.classList.toggle('pack', v.pack); credit.hidden = !v.pack;
     $$('button', thumbs).forEach(b => b.classList.toggle('is-on', b === e.currentTarget));
   } }, el('img', { src: v.src, alt: '' }))));
   thumbs.hidden = false;
-  if (!p.pack) { credit.hidden = true; return; }
+  credit.hidden = true;
+  if (!p.pack) return;
   credit.replaceChildren(`${t('pm.imgBy')} `, el('a', { href: p.pack.url, target: '_blank', rel: 'noopener', text: p.pack.credit }), ` · ${p.pack.license}`);
-  credit.hidden = false;
 }
 
 /* ---------------- product viewer: 360 turntable, or 3D tilt for a single photo ---------------- */
@@ -519,7 +520,7 @@ function renderCart() {
   const box = $('#cartItems');
   if (!lines.length) box.replaceChildren(el('p', { class: 'cart-empty', text: t('cart.empty') }));
   else box.replaceChildren(...lines.map(({ p, qty }) => el('div', { class: 'ci' },
-    el('img', { src: p.pack ? p.pack.thumb : p.thumb, alt: '', width: 72, height: 88 }),
+    el('img', { src: p.thumb, alt: '', width: 72, height: 88 }),
     el('div', {},
       el('b', { text: fullName(p) }),
       el('span', { class: 'muted', text: meta(p) }),
@@ -664,7 +665,7 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-act]');
   if (!b) return;
   const { act, id } = b.dataset;
-  if (act === 'add') { addToCart(id); if (b.tagName === 'BUTTON') { b.textContent = t('p.added'); b.classList.add('done'); clearTimeout(b._t); b._t = setTimeout(() => { b.textContent = t('p.add'); b.classList.remove('done'); }, 1400); } }
+  if (act === 'add') { addToCart(id); if (b.tagName === 'BUTTON') { const card = b.closest('.card'); if (card) card.classList.add('sold'); b.textContent = t('p.added'); b.classList.add('done'); clearTimeout(b._t); b._t = setTimeout(() => { b.textContent = t('p.add'); b.classList.remove('done'); if (card) card.classList.remove('sold'); }, 1400); } }
   else if (act === 'open') openProduct(id);
   else if (act === 'inc') setQty(id, (cart[id] || 0) + 1);
   else if (act === 'dec') setQty(id, (cart[id] || 0) - 1);
@@ -687,47 +688,125 @@ document.addEventListener('click', e => {
   setGender(l.dataset.g);
 });
 
-/* ---------------- hero carousel ---------------- */
-const SLIDE_MS = 7000;
-const SLIDE_G = ['men', 'women', 'unisex'];
+/* ---------------- hero: each collection plays its video, then three spotlight photos, then the video again ---------------- */
+const CATS = ['men', 'women', 'unisex'];
+const VIDEO_MS = 5000, PHOTO_MS = 4500, FADE_MS = 1800;
 const hero = $('.hero');
 const heroVideos = $$('.hero-video');
 const heroTabs = $$('#heroTabs button');
+const heroSpot = $('#heroSpot');
+const heroPill = $('#heroPill');
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-let slide = 0, slideTimer = null;
-function showSlide(i) {
-  slide = (i + SLIDE_G.length) % SLIDE_G.length;
+let cat = 0, step = 'video', photoIdx = 0, stepTimer = null, run = 0;
+const spotProducts = () => (((cfg.spotlight || {})[CATS[cat]]) || []).map(id => byId.get(id)).filter(p => p && p.image);
+const spotImgs = () => $$(`img[data-cat="${CATS[cat]}"]`, heroSpot);
+
+// every collection's photos live in the page from the start, so switching tabs never reloads them.
+// The current collection loads first; the others follow once it has settled.
+function buildSpot() {
+  const list = [];
+  CATS.forEach(c => (((cfg.spotlight || {})[c]) || []).map(id => byId.get(id)).filter(p => p && p.image).forEach(p => list.push([c, p])));
+  heroSpot.replaceChildren(...list.map(([c, p]) => el('img', { alt: '', width: 1200, height: 1960, decoding: 'async', dataset: { cat: c, src: p.image } })));
+  loadSpot(CATS[cat]);
+  setTimeout(() => CATS.forEach(loadSpot), 1500);
+}
+function loadSpot(c) {
+  $$(`img[data-cat="${c}"]`, heroSpot).forEach(im => { if (!im.getAttribute('src')) im.src = im.dataset.src; });
+}
+const imgReady = (im, ms) => Promise.race([im.decode().then(() => true, () => false), new Promise(r => setTimeout(() => r(false), ms))]);
+function showVideo(on) {
   heroVideos.forEach((v, n) => {
-    const on = n === slide;
-    v.classList.toggle('is-on', on);
-    if (on) { v.preload = 'auto'; v.play().catch(() => {}); } else setTimeout(() => { if (!v.classList.contains('is-on')) v.pause(); }, 950);
+    const active = on && n === cat;
+    v.classList.toggle('is-on', active);
+    if (active) { v.preload = 'auto'; if (!reduceMotion) v.play().catch(() => {}); }
+    else setTimeout(() => { if (!v.classList.contains('is-on')) v.pause(); }, FADE_MS + 60);
   });
-  heroTabs.forEach((b, n) => {
-    b.classList.toggle('is-on', n === slide);
-    b.setAttribute('aria-selected', n === slide ? 'true' : 'false');
-    // restart the progress line animation
-    const bar = b.querySelector('i'); bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = '';
+}
+function restartBar() {
+  const total = VIDEO_MS + Math.max(spotProducts().length, 1) * PHOTO_MS;
+  hero.style.setProperty('--slide', total + 'ms');
+  heroTabs.forEach(b => { const bar = b.querySelector('i'); bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = ''; });
+}
+function fillPill(p) {
+  heroPill.dataset.id = p.id;
+  heroPill.classList.remove('swap'); void heroPill.offsetWidth; heroPill.classList.add('swap');
+  heroPill.replaceChildren(
+    el('span', { class: 'pill-name', text: fullName(p) }),
+    p.priceCents == null ? null : el('span', { class: 'pill-price', text: money(p.priceCents) }),
+    el('span', { class: 'pill-go', text: t('hero.see') }));
+  heroPill.hidden = false;
+}
+function startVideo() {
+  clearTimeout(stepTimer);
+  const r = ++run;
+  // coming back from the photos, the film is already opaque under them: show it at once and let the photos fade away
+  if (hero.classList.contains('is-spot')) { hero.classList.add('vcut'); setTimeout(() => hero.classList.remove('vcut'), FADE_MS + 100); }
+  step = 'video';
+  hero.classList.remove('is-spot');
+  $$('img', heroSpot).forEach(im => im.classList.remove('is-on'));
+  showVideo(true);
+  if (reduceMotion) { showPhoto(0); return; }
+  restartBar();
+  // the five seconds start when the film is really playing, not while it is still buffering
+  const v = heroVideos[cat];
+  const go = () => { if (r === run) stepTimer = setTimeout(startPhotos, VIDEO_MS); };
+  if (v.readyState >= 3 && !v.paused) go();
+  else { v.addEventListener('playing', go, { once: true }); stepTimer = setTimeout(go, 2500); }
+}
+async function startPhotos() {
+  const r = run;
+  const imgs = spotImgs();
+  if (!imgs.length) { stepTimer = setTimeout(startPhotos, 500); return; }
+  loadSpot(CATS[cat]);
+  // only cross over once the first photo is decoded; until then the film keeps playing
+  const ok = await imgReady(imgs[0], 1500);
+  if (r !== run) return;
+  if (!ok) { stepTimer = setTimeout(startPhotos, 800); return; }
+  step = 'photos';
+  // the first photo appears at once; the whole layer fades in over the film
+  hero.classList.add('spot-cut'); setTimeout(() => hero.classList.remove('spot-cut'), FADE_MS + 100);
+  showVideo(false);
+  hero.classList.add('is-spot');
+  showPhoto(0);
+}
+function showPhoto(i) {
+  clearTimeout(stepTimer);
+  const imgs = spotImgs(), list = spotProducts();
+  if (!imgs.length) return;
+  photoIdx = i;
+  imgs.forEach((im, n) => {
+    if (n === i) { im.classList.remove('kb'); void im.offsetWidth; im.classList.add('kb', 'is-on'); }
+    else { im.classList.remove('is-on'); setTimeout(() => { if (!im.classList.contains('is-on')) im.classList.remove('kb'); }, FADE_MS + 250); }
   });
-  $('#heroTitle').dataset.i18n = `slide.${slide}.title`;
-  $('#heroLead').dataset.i18n = `slide.${slide}.lead`;
-  const cta = $('#heroCta'); cta.dataset.i18n = `slide.${slide}.cta`; cta.dataset.g = SLIDE_G[slide];
-  $('#heroTitle').textContent = t(`slide.${slide}.title`);
-  $('#heroLead').textContent = t(`slide.${slide}.lead`);
-  cta.textContent = t(`slide.${slide}.cta`);
+  // the label changes at the midpoint of the photo crossfade, not before it
+  const r = run;
+  if (reduceMotion) fillPill(list[i]); else setTimeout(() => { if (r === run && step === 'photos') fillPill(list[i]); }, FADE_MS / 2);
+  imgs[i + 1]?.decode?.().catch(() => {});
+  if (reduceMotion) { hero.classList.add('is-spot'); return; }
+  stepTimer = setTimeout(() => (i + 1 < imgs.length ? showPhoto(i + 1) : startVideo()), PHOTO_MS);
+}
+function setCat(i) {
+  cat = (i + CATS.length) % CATS.length;
+  hero.dataset.cat = CATS[cat];
+  heroTabs.forEach((b, n) => { b.classList.toggle('is-on', n === cat); b.setAttribute('aria-selected', n === cat ? 'true' : 'false'); });
+  $('#heroTitle').dataset.i18n = `slide.${cat}.title`;
+  $('#heroLead').dataset.i18n = `slide.${cat}.lead`;
+  const cta = $('#heroCta'); cta.dataset.i18n = `slide.${cat}.cta`; cta.dataset.g = CATS[cat];
+  $('#heroTitle').textContent = t(`slide.${cat}.title`);
+  $('#heroLead').textContent = t(`slide.${cat}.lead`);
+  cta.textContent = t(`slide.${cat}.cta`);
   if (typeof heroIn === 'function') heroIn();
-  schedule();
+  heroPill.hidden = true;
+  loadSpot(CATS[cat]);
+  startVideo();
 }
-function schedule() {
-  clearTimeout(slideTimer);
-  if (reduceMotion || hero.classList.contains('paused')) return;
-  slideTimer = setTimeout(() => showSlide(slide + 1), SLIDE_MS);
-}
-hero.style.setProperty('--slide', SLIDE_MS + 'ms');
-heroTabs.forEach(b => b.addEventListener('click', () => showSlide(Number(b.dataset.slide))));
-hero.addEventListener('mouseenter', () => { hero.classList.add('paused'); clearTimeout(slideTimer); });
-hero.addEventListener('mouseleave', () => { hero.classList.remove('paused'); showSlide(slide); });
-document.addEventListener('visibilitychange', () => { if (document.hidden) clearTimeout(slideTimer); else schedule(); });
-schedule();
+function pauseHero() { run++; hero.classList.add('paused'); clearTimeout(stepTimer); }
+function resumeHero() { hero.classList.remove('paused'); if (reduceMotion) return; if (step === 'video') startVideo(); else showPhoto(photoIdx); }
+heroTabs.forEach(b => b.addEventListener('click', () => setCat(Number(b.dataset.slide))));
+if (matchMedia('(hover: hover)').matches) { hero.addEventListener('mouseenter', pauseHero); hero.addEventListener('mouseleave', resumeHero); }
+document.addEventListener('visibilitychange', () => { if (document.hidden) pauseHero(); else resumeHero(); });
+function heroSpotReady() { buildSpot(); if (reduceMotion && step === 'video') showPhoto(0); }
+startVideo();
 
 /* collection tiles play on hover or focus */
 $$('.col-tile').forEach(tile => {
@@ -811,6 +890,7 @@ async function boot() {
     fetch('/api/products').then(r => r.json()),
   ]);
   cfg = c; products = prods; byId = new Map(prods.map(p => [p.id, p]));
+  heroSpotReady();
   const counts = new Map(); for (const p of products) counts.set(p.brand, (counts.get(p.brand) || 0) + 1);
   const brands = [...counts].sort((x, y) => y[1] - x[1]).map(x => x[0]);
   const shown = brands.slice(0, 6);
