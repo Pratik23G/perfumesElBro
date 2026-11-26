@@ -4,21 +4,29 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b0a08">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Pedidos">
+<link rel="apple-touch-icon" href="/img/admin-icon-180.png">
+<link rel="icon" type="image/png" href="/img/admin-icon-192.png">
+<link rel="manifest" href="/admin.webmanifest">
 <title>Orders · Perfumes El Bro</title>
 <style>
-:root{color-scheme:dark;--bg:#0f0e0d;--s:#171513;--ink:#f4f0e9;--ink2:#b9b1a4;--m:#8f8779;--line:rgba(244,240,233,.14)}
+:root{color-scheme:dark;--bg:#0b0a08;--s:#151310;--ink:#f6f2ea;--ink2:#b9b1a4;--m:#8f8779;--line:rgba(244,240,233,.14)}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-main{width:min(880px,100% - 32px);margin:0 auto;padding:32px 0 64px}
-h1{font:400 32px/1.1 Georgia,serif;margin:0 0 4px}p{margin:0}.m{color:var(--m);font-size:13px}
+main{width:min(880px,100% - 32px);margin:0 auto;padding:max(32px,calc(env(safe-area-inset-top) + 16px)) 0 max(64px,env(safe-area-inset-bottom))}
+h1{font:700 32px/1.1 system-ui,-apple-system,sans-serif;letter-spacing:-.02em;margin:0 0 4px}p{margin:0}.m{color:var(--m);font-size:13px}
 input,button,a.b,textarea{font:inherit;color:inherit}
 input,textarea{background:var(--s);border:1px solid var(--line);border-radius:2px;padding:10px 12px;font-size:16px;width:100%}
 .b,button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border:1px solid var(--line);background:none;border-radius:2px;cursor:pointer;text-decoration:none;font-size:14px}
-.b:hover,button:hover{border-color:var(--ink)}.pri{background:var(--ink);color:var(--bg);border-color:transparent}
+.b:hover,button:hover{border-color:var(--ink)}.pri{background:#f0b429;color:#0b0a08;border-color:transparent}
 .row{display:flex;gap:8px;flex-wrap:wrap}.bar{display:flex;gap:8px;margin:24px 0}
 .o{border-top:1px solid var(--line);padding:20px 0;display:grid;gap:12px}
 .top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline}
 .top b{font-size:18px;font-weight:500}.tag{font-size:12px;color:var(--ink2);border:1px solid var(--line);padding:2px 8px;border-radius:2px}
-.tag.paid,.tag.shipped{color:var(--bg);background:var(--ink);border-color:transparent}
+.tag.paid,.tag.shipped{color:#0b0a08;background:#f0b429;border-color:transparent}
 ul{margin:0;padding-left:18px;color:var(--ink2)}
 .msgs{display:grid;gap:8px;padding:12px;background:var(--s);border:1px solid var(--line)}
 .msgs .l{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.msgs .l span{min-width:120px;font-size:13px;color:var(--ink2)}
@@ -50,32 +58,32 @@ const wa = (phone, body) => `https://wa.me/${digits(phone).length === 10 ? '1' +
 const T = {
   received: {
     label: 'Order received',
-    en: o => `Hello ${first(o.name)}, this is ${data.owner} from Perfumes El Bro. Thank you for your order ${o.id}:\n${o.lines}\nYour total is ${money(o.totalCents)}, with free shipping.\nTo complete it, please send ${money(o.totalCents)} by ${o.method} to ${o.handle} and write ${o.id} in the note. We ship as soon as we see the payment. If you have any questions, just reply to this message.`,
-    es: o => `Hola ${first(o.name)}, soy ${data.owner} de Perfumes El Bro. Gracias por tu pedido ${o.id}:\n${o.lines}\nTu total es ${money(o.totalCents)}, con envío gratis.\nPara completarlo, envía ${money(o.totalCents)} por ${o.method} a ${o.handle} y escribe ${o.id} en la nota. Enviamos en cuanto veamos el pago. Si tienes alguna pregunta, responde a este mensaje.`,
+    en: o => `Hello ${first(o.name)}, this is ${data.owner} from Perfumes El Bro. Thank you for your order ${o.id}:\n${o.lines}\nTotal: ${money(o.totalCents)}.\n${o.cash ? `You can pay in cash when we meet.` : `To reserve it, please send the payment by ${o.method} to ${o.handle} and write ${o.id} in the note.`}\nI will message you to arrange the delivery. If you would like more photos of the perfume, just ask.`,
+    es: o => `Hola ${first(o.name)}, soy ${data.owner} de Perfumes El Bro. Gracias por tu pedido ${o.id}:\n${o.lines}\nTotal: ${money(o.totalCents)}.\n${o.cash ? `Puedes pagar en efectivo cuando nos veamos.` : `Para apartarlo, envía el pago por ${o.method} a ${o.handle} y escribe ${o.id} en la nota.`}\nTe escribo para coordinar la entrega. Si quieres más fotos del perfume, solo pídelas.`,
   },
   reminder: {
-    label: 'Payment reminder',
-    en: o => `Hello ${first(o.name)}, a friendly reminder from Perfumes El Bro. Your order ${o.id} (${money(o.totalCents)}) is reserved and waiting for payment by ${o.method} to ${o.handle}. Please write ${o.id} in the note. Let us know if you need any help.`,
-    es: o => `Hola ${first(o.name)}, un recordatorio amable de Perfumes El Bro. Tu pedido ${o.id} (${money(o.totalCents)}) está reservado y esperando el pago por ${o.method} a ${o.handle}. Escribe ${o.id} en la nota. Avísanos si necesitas ayuda.`,
+    label: 'Reminder',
+    en: o => `Hello ${first(o.name)}, a friendly reminder from Perfumes El Bro. Your order ${o.id} (${money(o.totalCents)}) is reserved.${o.cash ? ' Let me know what day and place work for you to meet.' : ` It is waiting for payment by ${o.method} to ${o.handle}. Please write ${o.id} in the note.`} Let me know if you need anything.`,
+    es: o => `Hola ${first(o.name)}, un recordatorio amable de Perfumes El Bro. Tu pedido ${o.id} (${money(o.totalCents)}) está reservado.${o.cash ? ' Avísame qué día y lugar te funcionan para vernos.' : ` Está esperando el pago por ${o.method} a ${o.handle}. Escribe ${o.id} en la nota.`} Avísame si necesitas algo.`,
   },
   paid: {
     label: 'Payment received',
-    en: o => `Hello ${first(o.name)}, we received your payment of ${money(o.totalCents)} for order ${o.id}. Thank you. We are preparing your order and will text you the tracking number as soon as it ships.`,
-    es: o => `Hola ${first(o.name)}, recibimos tu pago de ${money(o.totalCents)} del pedido ${o.id}. Gracias. Estamos preparando tu pedido y te enviaremos el número de rastreo en cuanto salga.`,
+    en: o => `Hello ${first(o.name)}, I received your payment of ${money(o.totalCents)} for order ${o.id}. Thank you! I will message you to arrange the delivery.`,
+    es: o => `Hola ${first(o.name)}, recibí tu pago de ${money(o.totalCents)} del pedido ${o.id}. Gracias. Te escribo para coordinar la entrega.`,
   },
   shipped: {
-    label: 'Shipped',
+    label: 'Delivery',
     en: o => `Hello ${first(o.name)}, your order ${o.id} is on its way to ${o.city}, ${o.state}.${o.track ? `\nTracking: ${o.track}` : ''}\nThank you for choosing Perfumes El Bro. We hope you love it.`,
     es: o => `Hola ${first(o.name)}, tu pedido ${o.id} va en camino a ${o.city}, ${o.state}.${o.track ? `\nRastreo: ${o.track}` : ''}\nGracias por elegir Perfumes El Bro. Esperamos que te encante.`,
   },
 };
-const METHOD = { awaiting_zelle: 'Zelle', awaiting_venmo: 'Venmo', awaiting_applecash: 'Apple Cash' };
+const METHOD = { awaiting_zelle: 'Zelle', awaiting_venmo: 'Venmo', awaiting_applecash: 'Apple Cash', awaiting_cash: 'Cash' };
 
 function ctx(o) {
   const m = METHOD[o.status] || 'Zelle';
-  const key = { Zelle: 'zelle', Venmo: 'venmo', 'Apple Cash': 'applecash' }[m];
-  const h = data.pay[key] || data.pay.zelle;
-  return { ...o, ...(o.shipping || {}), method: m, handle: h, track: tracking[o.id] || '',
+  const key = { Zelle: 'zelle', Venmo: 'venmo', 'Apple Cash': 'applecash', Cash: 'cash' }[m];
+  const h = key === 'cash' ? '' : (data.pay[key] || data.pay.zelle);
+  return { ...o, ...(o.shipping || {}), method: m, handle: h, cash: key === 'cash', track: tracking[o.id] || '',
     lines: o.items.map(i => `• ${i.qty}× ${i.name}${i.size ? ' ' + i.size : ''}`).join('\n') };
 }
 function render() {
