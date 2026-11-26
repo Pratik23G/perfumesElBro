@@ -480,7 +480,7 @@ button, a.btn, .chip, select { -webkit-tap-highlight-color: transparent; touch-a
 .contact-alt .btn { padding: 0 8px; text-align: center; line-height: 1.2; }
 #cartShipNote:empty, #cartAccepts:empty { display: none; }
 
-.pay-alt #payApple { grid-column: 1 / -1; }
+.pay-alt #payCash { grid-column: 1 / -1; }
 .pay-steps { margin: 0; padding-left: 20px; display: grid; gap: 8px; color: var(--ink-2); font-size: 15px; }
 
 /* brands: one quiet line, six names and a count */
@@ -709,4 +709,29 @@ h1 { font-size: clamp(2.9rem, 7.4vw, 6rem); max-width: 12ch; }
   .hero-video { display: none; }
   .hero-media { background: var(--bg) url(/video/hero-men.jpg) center / cover; }
   .hero-tabs .is-on i::after { animation: none; transform: scaleX(1); }
+}
+
+/* collection tile for women: same dimming as the hero film so the blossoms do not break the dark palette */
+.col-tile[data-g="women"] video { filter: brightness(.6) saturate(.82) sepia(.14); }
+/* no reviews yet: one quiet line, not a large empty box */
+.rev-empty { border: 0; padding: 0 0 8px; text-align: left; font-size: 15px; color: var(--ink-2); }
+.rev-empty p { margin: 4px 0 0; }
+
+/* card action: outlined gold so price, seal and button are not three gold blocks per card; fills on hover and when added */
+.add { background: transparent; color: var(--gold); border: 1px solid var(--gold); }
+.add:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+.add.done, .add.done:hover { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+
+/* phone: a toolbar that costs one row of chips and one row of search, not a screenful */
+@media (max-width: 560px) {
+  .filters { flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 4px; padding-block: 4px 12px; margin-bottom: 20px; }
+  .chips { flex-wrap: nowrap; overflow-x: auto; gap: 20px; scrollbar-width: none; margin-inline: -16px; padding-inline: 16px; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chip { white-space: nowrap; }
+  .controls { flex-wrap: nowrap; gap: 8px; }
+  .count { display: none; }
+  .controls input { flex: 1 1 auto; min-width: 0; }
+  .filter-btn { flex: 0 0 auto; padding: 0 14px; min-width: 52px; justify-content: center; }
+  .filter-btn > span:not(.filter-n) { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  .section-head { margin-bottom: 8px; }
 }

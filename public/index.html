@@ -25,7 +25,7 @@
   <header class="site-header is-top" id="top">
     <div class="wrap bar">
       <a class="brand" href="#top" aria-label="Perfumes El Bro">
-        <img class="brand-logo" src="/img/logo-badge.webp" alt="" width="40" height="40">
+        <svg class="brand-logo" viewBox="0 0 40 40" width="40" height="40" aria-hidden="true"><rect width="40" height="40" rx="10" fill="#f0b429"/><text x="20" y="27.5" text-anchor="middle" font-family="Bricolage Grotesque, Arial, sans-serif" font-weight="800" font-size="19" letter-spacing="-1" fill="#0b0a08">EB</text></svg>
         <span class="brand-name">Perfumes <em>El Bro</em></span>
       </a>
       <nav class="nav" id="mainNav" aria-label="Principal">
@@ -81,7 +81,7 @@
     <!-- TRUST BAR -->
     <section class="trust" aria-label="Garantías">
       <div class="wrap trust-grid">
-        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.4 8 8 9 4.6-1 8-4 8-9V6l-8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg><b data-i18n="trust.1">Pago directo</b><span data-i18n="trust.1d">Zelle o Venmo</span></div>
+        <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 5 3.4 8 8 9 4.6-1 8-4 8-9V6l-8-3Z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg><b data-i18n="trust.1">Pago directo</b><span data-i18n="trust.1d">Zelle, Apple Cash o efectivo</span></div>
         <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 6h11v10H2z"/><path d="M13 9h4l4 3v4h-8"/><circle cx="6.5" cy="17.5" r="1.8"/><circle cx="16.5" cy="17.5" r="1.8"/></svg><b data-i18n="trust.2">Envíos a todo el país</b><span data-i18n="trust.2d">Directo hasta tu puerta</span></div>
         <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9l4-6Z"/><path d="M2 9h20M9 3l3 6 3-6M12 21 9 9m3 12 3-12"/></svg><b data-i18n="trust.3">Calidad garantizada</b><span data-i18n="trust.3d">Perfumes en su caja</span></div>
         <div><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8L3 12Z"/><circle cx="7.5" cy="8.5" r="1.3"/></svg><b data-i18n="trust.4">Precio fijo</b><span data-i18n="trust.4d">$80 por frasco</span></div>
@@ -138,7 +138,7 @@
         </div>
         <ol class="steps">
           <li><span>01</span><div><b data-i18n="why.s1">Elige tu fragancia</b><p data-i18n="why.s1d">Explora la colección y encuentra el aroma que va contigo.</p></div></li>
-          <li><span>02</span><div><b data-i18n="why.s2">Paga con Zelle o Venmo</b><p data-i18n="why.s2d">Envía el pago desde tu app y enviamos tu pedido en cuanto lo vemos.</p></div></li>
+          <li><span>02</span><div><b data-i18n="why.s2">Aparta con un pago inicial</b><p data-i18n="why.s2d">Paga con Zelle, Apple Cash o efectivo. Alex te confirma cómo apartar tu pedido.</p></div></li>
           <li><span>03</span><div><b data-i18n="why.s3">Recíbelo en casa</b><p data-i18n="why.s3d">Enviamos a todo el país, empacado para llegar perfecto.</p></div></li>
         </ol>
       </div>
@@ -221,7 +221,7 @@
         <div class="pm-rating" id="pmRating"></div>
         <div class="pm-price" id="pmPrice"></div>
         <div class="pm-actions" id="pmActions"></div>
-        <p class="pm-ship" data-i18n="pm.ship">Envío a todo el país. Paga con Zelle o Venmo.</p>
+        <p class="pm-ship" data-i18n="pm.ship">Envío a todo el país. Paga con Zelle, Apple Cash o efectivo.</p>
         <p class="pm-credit" id="pmCredit" hidden></p>
         <h4 data-i18n="rev.productReviews">Reseñas de este perfume</h4>
         <div class="pm-reviews" id="pmReviews"></div>
@@ -241,8 +241,8 @@
       <p class="muted small" id="cartAccepts"></p>
       <div class="pay-alt" id="payAlt" hidden>
         <button class="btn btn-ghost" id="payZelle" type="button" data-method="zelle" hidden>Zelle</button>
-        <button class="btn btn-ghost" id="payVenmo" type="button" data-method="venmo" hidden>Venmo</button>
         <button class="btn btn-ghost" id="payApple" type="button" data-method="applecash" hidden>Apple Cash</button>
+        <button class="btn btn-ghost" id="payCash" type="button" data-method="cash" hidden>Efectivo</button>
       </div>
       <div class="pay-alt contact-alt">
         <a class="btn btn-ghost" id="cartWa" href="#" target="_blank" rel="noopener" data-i18n="cart.wa">Pedir por WhatsApp</a>

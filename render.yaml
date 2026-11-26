@@ -16,5 +16,4 @@ services:
       - { key: STRIPE_WEBHOOK_SECRET, sync: false }
       - { key: ZELLE_ID, sync: false }
       - { key: ZELLE_NAME, sync: false }
-      - { key: VENMO_HANDLE, sync: false }
       - { key: ADMIN_TOKEN, generateValue: true }

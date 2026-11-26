@@ -27,14 +27,14 @@ const DICT = {
   es: {
     skip: 'Ir a la tienda',
     'nav.shop': 'Tienda', 'nav.why': 'Cómo funciona', 'nav.reviews': 'Reseñas', 'nav.contact': 'Contacto',
-    'hero.lead': 'Chanel, Dior, Yves Saint Laurent, Creed y Tom Ford desde $80 el frasco. Paga con Zelle o Venmo. Pide por WhatsApp o mensaje de texto.',
+    'hero.lead': 'Chanel, Dior, Yves Saint Laurent, Creed y Tom Ford desde $80 el frasco. Paga con Zelle, Apple Cash o efectivo. Pide por WhatsApp o mensaje de texto.',
     'hero.wa': 'Pedir por WhatsApp',
     'p.sealed': 'Sellado', 'hero.see': 'Ver perfume',
     'slide.0.title': 'Para él', 'slide.0.lead': 'Originales sellados desde $80 el frasco. Directo de una persona.', 'slide.0.cta': 'Ver perfumes para hombre',
     'slide.1.title': 'Para ella', 'slide.1.lead': 'Florales, frescos y dulces, sellados. Desde $80 el frasco.', 'slide.1.cta': 'Ver perfumes para mujer',
     'slide.2.title': 'Para todos', 'slide.2.lead': 'Aromas unisex de Tom Ford, Creed y más.', 'slide.2.cta': 'Ver perfumes unisex',
     'col.title': 'Compra por colección', 'col.cta': 'Ver colección', 'hero.tabs': 'Colecciones',
-    'trust.1': 'Pago directo', 'trust.1d': 'Zelle o Venmo',
+    'trust.1': 'Pago directo', 'trust.1d': 'Zelle, Apple Cash o efectivo',
     'trust.2': 'Envíos a todo el país', 'trust.2d': 'Directo hasta tu puerta',
     'trust.3': 'Calidad garantizada', 'trust.3d': 'Perfumes en su caja',
     'trust.4': 'Precio fijo', 'trust.4d': '$80 por frasco',
@@ -42,10 +42,10 @@ const DICT = {
     'f.all': 'Todos', 'f.men': 'Hombre', 'f.women': 'Mujer', 'f.unisex': 'Unisex', 'f.search': 'Buscar', 'f.brands': 'Todas las marcas', 'f.title': 'Filtrar y ordenar', 'f.sort': 'Ordenar', 'f.brand': 'Marca', 'f.conc': 'Concentración', 'f.clear': 'Limpiar todo', 'f.show': 'Ver', 'f.clearAll': 'Limpiar todo',
     'sort.featured': 'Destacados', 'sort.az': 'Nombre A–Z', 'sort.pa': 'Precio: menor a mayor', 'sort.pd': 'Precio: mayor a menor', 'sort.rating': 'Mejor valorados',
     'why.title': 'Cómo funciona tu pedido',
-    'why.lead': 'Elige, paga y recíbelo en casa. Cada pedido se prepara con cuidado y se envía protegido.',
+    'why.lead': 'Elige tu perfume, apártalo con un pago inicial y Alex se encarga del resto contigo, incluida la entrega.',
     'why.s1': 'Elige tu fragancia', 'why.s1d': 'Explora la colección y encuentra el aroma que va contigo.',
-    'why.s2': 'Paga con Zelle o Venmo', 'why.s2d': 'Envía el pago desde tu app y enviamos tu pedido en cuanto lo vemos.',
-    'why.s3': 'Recíbelo en casa', 'why.s3d': 'Enviamos a todo el país, empacado para llegar perfecto.',
+    'why.s2': 'Aparta con un pago inicial', 'why.s2d': 'Paga con Zelle, Apple Cash o efectivo. Alex te confirma cómo apartar tu pedido.',
+    'why.s3': 'Alex coordina contigo', 'why.s3d': 'Alex te escribe, resuelve tus dudas, te manda más fotos si las quieres y coordina la entrega.',
     'rev.live': 'En vivo', 'rev.title': 'Lo que dicen nuestros clientes',
     'rev.write': 'Deja tu reseña', 'rev.product': 'Perfume', 'rev.general': 'Perfumes El Bro (general)', 'rev.rating': 'Tu calificación',
     'rev.name': 'Tu nombre', 'rev.comment': 'Tu opinión', 'rev.send': 'Publicar reseña',
@@ -60,16 +60,16 @@ const DICT = {
     'cart.empty': 'Tu carrito está vacío.', 'cart.remove': 'Quitar', 'cart.added': 'Añadido al carrito',
     'cart.shipFree': 'Envío gratis a todo el país.', 'cart.ship': 'Envío', 'cart.shipFreeOver': 'Envío gratis en pedidos desde',
     'cart.noStripe': 'Pide por WhatsApp o mensaje de texto.', 'cart.sms': 'Enviar texto', 'ct.sms': 'Mensaje de texto', 'pay.confirmSms': 'Avisar por mensaje',
-    'cart.err': 'No pudimos iniciar el pago. Inténtalo de nuevo o pide por WhatsApp.', 'cart.redirect': 'Redirigiendo a pago seguro', 'pm.ship': 'Envío a todo el país. Paga con Zelle o Venmo.', 'pm.drag': 'Arrastra para girar · 360°', 'pm.pack': 'Caja y frasco', 'pm.stock': 'Nuestro stock', 'pm.imgBy': 'Imagen:',
+    'cart.err': 'No pudimos iniciar el pago. Inténtalo de nuevo o pide por WhatsApp.', 'cart.redirect': 'Redirigiendo a pago seguro', 'pm.ship': 'Envío a todo el país. Paga con Zelle, Apple Cash o efectivo.', 'pm.drag': 'Arrastra para girar · 360°', 'pm.pack': 'Caja y frasco', 'pm.stock': 'Nuestro stock', 'pm.imgBy': 'Imagen:',
     'p.ask': 'Consultar precio', 'p.askBtn': 'Preguntar', 'p.add': 'Añadir', 'p.test': 'precio de prueba', 'p.view': 'Ver detalles',
     'p.added': 'Añadido', 'cart.accepts': 'Aceptamos', 'pay.venmoPhone': 'En Venmo, busca este número', 'nav.menu': 'Menú', 'brands.more': 'marcas',
-    'pay.zelleTitle': 'Pagar con Zelle', 'pay.venmoTitle': 'Pagar con Venmo', 'pay.acTitle': 'Pagar con Apple Cash', 'pay.acHow': 'Solo iPhone. Abre Mensajes, escribe a este número, toca + y elige Apple Cash. Si tienes Android, usa Zelle o Venmo.', 'pay.openMsgs': 'Abrir Mensajes', 'wa.iam': 'Hola, soy', 'wa.thanks': 'Gracias.', 'pay.s1': 'Envías el pago', 'pay.s2': 'Te confirmamos por mensaje de texto', 'pay.s3': 'Enviamos tu pedido y te mandamos el rastreo',
+    'pay.cashLead': 'Déjanos tus datos para que Alex coordine la entrega contigo. Pagas en efectivo cuando te entregue.', 'pay.cashTitle': 'Pagar en efectivo', 'pay.cashName': 'Efectivo', 'pay.cashNote': 'Pagas en efectivo cuando Alex te entregue tu pedido. Guarda tu código de pedido.', 'pay.zelleTitle': 'Pagar con Zelle', 'pay.venmoTitle': 'Pagar con Venmo', 'pay.acTitle': 'Pagar con Apple Cash', 'pay.acHow': 'Solo iPhone. Abre Mensajes, escribe a este número, toca + y elige Apple Cash. Si tienes Android, usa Zelle.', 'pay.openMsgs': 'Abrir Mensajes', 'wa.iam': 'Hola, soy', 'wa.thanks': 'Gracias.', 'pay.s1': 'Envías el pago', 'pay.s2': 'Alex te confirma por mensaje', 'pay.s3': 'Alex coordina la entrega contigo',
     'pay.lead': 'Déjanos tus datos de envío. Después te mostramos cómo enviar el pago.',
     'pay.name': 'Nombre completo', 'pay.phone': 'Teléfono', 'pay.email': 'Correo (opcional)', 'pay.address': 'Dirección', 'pay.address2': 'Apartamento, suite (opcional)', 'pay.city': 'Ciudad', 'pay.state': 'Estado', 'pay.zip': 'ZIP',
     'pay.place': 'Hacer pedido', 'pay.err': 'Revisa tus datos: nombre, teléfono, dirección completa y un ZIP de 5 dígitos.', 'pay.errGeneric': 'No pudimos crear el pedido. Inténtalo de nuevo o escríbenos por WhatsApp.',
     'pay.doneTitle': 'Pedido recibido', 'pay.order': 'Pedido', 'pay.send': 'Envía exactamente', 'pay.via': 'por', 'pay.to': 'a', 'pay.note': 'En la nota escribe',
     'pay.copy': 'Copiar', 'pay.copied': 'Copiado', 'pay.openVenmo': 'Abrir Venmo', 'pay.confirm': 'Avisar por WhatsApp',
-    'pay.next': 'Enviamos tu pedido en cuanto veamos el pago. Avísanos por WhatsApp cuando lo hagas.', 'pay.card': 'Pagar con tarjeta o Apple Pay',
+    'pay.next': 'Alex confirma tu pedido y coordina la entrega contigo. Avísale por WhatsApp cuando envíes el pago.', 'pay.card': 'Pagar con tarjeta o Apple Pay',
     'wa.paid': 'acabo de enviar el pago de mi pedido.',
     'wa.hello': 'Hola, me gustaría hacer un pedido.', 'wa.ask': 'Hola, quiero información sobre', 'wa.order': 'Hola, me gustaría pedir:',
     'close': 'Cerrar',
@@ -78,14 +78,14 @@ const DICT = {
   en: {
     skip: 'Skip to shop',
     'nav.shop': 'Shop', 'nav.why': 'How it works', 'nav.reviews': 'Reviews', 'nav.contact': 'Contact',
-    'hero.lead': 'Chanel, Dior, Yves Saint Laurent, Creed and Tom Ford from $80 a bottle. Pay with Zelle or Venmo. Order on WhatsApp or text.',
+    'hero.lead': 'Chanel, Dior, Yves Saint Laurent, Creed and Tom Ford from $80 a bottle. Pay with Zelle, Apple Cash or cash. Order on WhatsApp or text.',
     'hero.wa': 'Order on WhatsApp',
     'p.sealed': 'Sealed', 'hero.see': 'View',
     'slide.0.title': 'For him', 'slide.0.lead': 'Sealed originals from $80 a bottle. Straight from one person.', 'slide.0.cta': 'Shop men',
     'slide.1.title': 'For her', 'slide.1.lead': 'Floral, fresh and sweet, sealed. From $80 a bottle.', 'slide.1.cta': 'Shop women',
     'slide.2.title': 'For everyone', 'slide.2.lead': 'Unisex scents from Tom Ford, Creed and more.', 'slide.2.cta': 'Shop unisex',
     'col.title': 'Shop by collection', 'col.cta': 'View collection', 'hero.tabs': 'Collections',
-    'trust.1': 'Direct payment', 'trust.1d': 'Zelle or Venmo',
+    'trust.1': 'Direct payment', 'trust.1d': 'Zelle, Apple Cash or cash',
     'trust.2': 'Nationwide shipping', 'trust.2d': 'Straight to your door',
     'trust.3': 'Quality guaranteed', 'trust.3d': 'Perfumes in their box',
     'trust.4': 'Flat pricing', 'trust.4d': '$80 per bottle',
@@ -93,10 +93,10 @@ const DICT = {
     'f.all': 'All', 'f.men': 'Men', 'f.women': 'Women', 'f.unisex': 'Unisex', 'f.search': 'Search', 'f.brands': 'All brands', 'f.title': 'Filter and sort', 'f.sort': 'Sort by', 'f.brand': 'Brand', 'f.conc': 'Concentration', 'f.clear': 'Clear all', 'f.show': 'Show', 'f.clearAll': 'Clear all',
     'sort.featured': 'Featured', 'sort.az': 'Name A–Z', 'sort.pa': 'Price: low to high', 'sort.pd': 'Price: high to low', 'sort.rating': 'Top rated',
     'why.title': 'How your order works',
-    'why.lead': 'Choose, pay and get it at home. Every order is prepared with care and shipped protected.',
+    'why.lead': 'Choose your perfume, reserve it with a deposit, and Alex handles the rest with you, including delivery.',
     'why.s1': 'Choose your fragrance', 'why.s1d': 'Browse the collection and find the scent that fits you.',
-    'why.s2': 'Pay with Zelle or Venmo', 'why.s2d': 'Send the payment from your app and we ship as soon as we see it.',
-    'why.s3': 'Get it at home', 'why.s3d': 'We ship nationwide, packed to arrive perfectly.',
+    'why.s2': 'Reserve with a deposit', 'why.s2d': 'Pay with Zelle, Apple Cash or cash. Alex confirms how to reserve your order.',
+    'why.s3': 'Alex takes it from here', 'why.s3d': 'Alex messages you, answers your questions, sends more photos if you want them, and arranges delivery.',
     'rev.live': 'Live', 'rev.title': 'What our customers say',
     'rev.write': 'Leave a review', 'rev.product': 'Perfume', 'rev.general': 'Perfumes El Bro (general)', 'rev.rating': 'Your rating',
     'rev.name': 'Your name', 'rev.comment': 'Your opinion', 'rev.send': 'Post review',
@@ -111,16 +111,16 @@ const DICT = {
     'cart.empty': 'Your cart is empty.', 'cart.remove': 'Remove', 'cart.added': 'Added to cart',
     'cart.shipFree': 'Free shipping nationwide.', 'cart.ship': 'Shipping', 'cart.shipFreeOver': 'Free shipping on orders from',
     'cart.noStripe': 'Order on WhatsApp or text.', 'cart.sms': 'Text us', 'ct.sms': 'Text us', 'pay.confirmSms': 'Tell us by text',
-    'cart.err': "We couldn't start checkout. Try again or order on WhatsApp.", 'cart.redirect': 'Redirecting to secure checkout', 'pm.ship': 'Shipping nationwide. Pay with Zelle or Venmo.', 'pm.drag': 'Drag to rotate · 360°', 'pm.pack': 'Box and bottle', 'pm.stock': 'Our stock', 'pm.imgBy': 'Image:',
+    'cart.err': "We couldn't start checkout. Try again or order on WhatsApp.", 'cart.redirect': 'Redirecting to secure checkout', 'pm.ship': 'Shipping nationwide. Pay with Zelle, Apple Cash or cash.', 'pm.drag': 'Drag to rotate · 360°', 'pm.pack': 'Box and bottle', 'pm.stock': 'Our stock', 'pm.imgBy': 'Image:',
     'p.ask': 'Ask for price', 'p.askBtn': 'Ask', 'p.add': 'Add', 'p.test': 'test price', 'p.view': 'View details',
     'p.added': 'Added', 'cart.accepts': 'We accept', 'pay.venmoPhone': 'In Venmo, search for this number', 'nav.menu': 'Menu', 'brands.more': 'brands',
-    'pay.zelleTitle': 'Pay with Zelle', 'pay.venmoTitle': 'Pay with Venmo', 'pay.acTitle': 'Pay with Apple Cash', 'pay.acHow': 'iPhone only. Open Messages, start a chat with this number, tap + and choose Apple Cash. On Android, use Zelle or Venmo.', 'pay.openMsgs': 'Open Messages', 'wa.iam': 'Hello, this is', 'wa.thanks': 'Thank you.', 'pay.s1': 'You send the payment', 'pay.s2': 'We confirm by text message', 'pay.s3': 'We ship and text you the tracking number',
+    'pay.cashLead': 'Leave your details so Alex can arrange delivery with you. You pay in cash when he hands it over.', 'pay.cashTitle': 'Pay in cash', 'pay.cashName': 'Cash', 'pay.cashNote': 'You pay in cash when Alex hands you your order. Keep your order code.', 'pay.zelleTitle': 'Pay with Zelle', 'pay.venmoTitle': 'Pay with Venmo', 'pay.acTitle': 'Pay with Apple Cash', 'pay.acHow': 'iPhone only. Open Messages, start a chat with this number, tap + and choose Apple Cash. On Android, use Zelle.', 'pay.openMsgs': 'Open Messages', 'wa.iam': 'Hello, this is', 'wa.thanks': 'Thank you.', 'pay.s1': 'You send the payment', 'pay.s2': 'Alex confirms by message', 'pay.s3': 'Alex arranges delivery with you',
     'pay.lead': 'Leave your shipping details. Next we show you how to send the payment.',
     'pay.name': 'Full name', 'pay.phone': 'Phone', 'pay.email': 'Email (optional)', 'pay.address': 'Address', 'pay.address2': 'Apartment, suite (optional)', 'pay.city': 'City', 'pay.state': 'State', 'pay.zip': 'ZIP',
     'pay.place': 'Place order', 'pay.err': 'Check your details: name, phone, full address and a 5-digit ZIP.', 'pay.errGeneric': "We couldn't create the order. Try again or message us on WhatsApp.",
     'pay.doneTitle': 'Order received', 'pay.order': 'Order', 'pay.send': 'Send exactly', 'pay.via': 'with', 'pay.to': 'to', 'pay.note': 'In the note write',
     'pay.copy': 'Copy', 'pay.copied': 'Copied', 'pay.openVenmo': 'Open Venmo', 'pay.confirm': 'Tell us on WhatsApp',
-    'pay.next': 'We ship as soon as we see the payment. Message us on WhatsApp once you have sent it.', 'pay.card': 'Pay by card or Apple Pay',
+    'pay.next': 'Alex confirms your order and arranges delivery with you. Message him on WhatsApp once you have sent the payment.', 'pay.card': 'Pay by card or Apple Pay',
     'wa.paid': 'I just sent the payment for my order.',
     'wa.hello': "Hello, I'd like to place an order.", 'wa.ask': "Hi, I'd like information about", 'wa.order': "Hello, I'd like to order:",
     'close': 'Close',
@@ -545,12 +545,13 @@ function renderCart() {
   $('#cartMsg').textContent = '';
   $('#cartMsg').className = 'form-msg';
   const pay = cfg.payments || {};
-  $('#payZelle').hidden = !pay.zelle; $('#payVenmo').hidden = !pay.venmo; $('#payApple').hidden = !pay.applecash;
-  $('#payAlt').hidden = !pay.zelle && !pay.venmo && !pay.applecash;
+  $('#payZelle').hidden = !pay.zelle; $('#payApple').hidden = !pay.applecash; $('#payCash').hidden = !pay.cash;
+  $('#payCash').textContent = t('pay.cashName');
+  $('#payAlt').hidden = !pay.zelle && !pay.applecash && !pay.cash;
   $$('#payAlt button').forEach(b => { b.disabled = !lines.length; });
-  const hasManual = !!(pay.zelle || pay.venmo || pay.applecash);
+  const hasManual = !!(pay.zelle || pay.applecash || pay.cash);
   $('#payAlt').classList.add('primary');
-  const accepts = [pay.zelle && 'Zelle', pay.venmo && 'Venmo', pay.applecash && 'Apple Cash',].filter(Boolean);
+  const accepts = [pay.zelle && 'Zelle', pay.applecash && 'Apple Cash', pay.cash && t('pay.cashName')].filter(Boolean);
   $('#cartAccepts').textContent = accepts.length ? `${t('cart.accepts')} ${accepts.join(' · ')}` : '';
   if (!cfg.stripeEnabled && !hasManual && lines.length) { $('#cartMsg').textContent = t('cart.noStripe'); }
 }
@@ -577,8 +578,8 @@ const payModal = $('#payModal'), payForm = $('#payForm'), payDone = $('#payDone'
 let payMethod = null;
 function openPay(method) {
   payMethod = method;
-  $('#payTitle').textContent = t({ zelle: 'pay.zelleTitle', venmo: 'pay.venmoTitle', applecash: 'pay.acTitle' }[method]);
-  $('#payLead').textContent = `${money(subtotal())} · ${t('pay.lead')}`;
+  $('#payTitle').textContent = t({ zelle: 'pay.zelleTitle', venmo: 'pay.venmoTitle', applecash: 'pay.acTitle', cash: 'pay.cashTitle' }[method]);
+  $('#payLead').textContent = `${money(subtotal())} · ${t(method === 'cash' ? 'pay.cashLead' : 'pay.lead')}`;
   $('#payMsg').textContent = ''; $('#payMsg').className = 'form-msg';
   payForm.hidden = false; payDone.hidden = true;
   closeDrawer();
@@ -592,7 +593,12 @@ function copyBtn(text) {
 const isPhone = h => /^[\d+\-\s().]{7,}$/.test(h);
 function showPayDone(o) {
   const amount = money(o.amountCents);
-  const rows = [
+  const rows = o.method === 'cash' ? [
+    el('p', { class: 'pay-line' }, t('pay.cashNote')),
+    el('p', { class: 'pay-line' }, `${t('pay.order')}:`),
+    el('div', { class: 'pay-code' }, el('b', { text: o.id }), copyBtn(o.id)),
+    el('a', { class: 'btn btn-gold block', target: '_blank', rel: 'noopener', href: waLink([`${t('wa.iam')} ${o.name}.`, `${t('pay.order')} ${o.id}`, ...o.items.map(i => `• ${i.qty}× ${i.name}`), amount, t('wa.thanks')].join('\n')), text: t('pay.confirm') }),
+  ] : [
     el('p', { class: 'pay-line' }, `${t('pay.send')} `, el('b', { text: amount }), ` ${t('pay.via')} ${{ zelle: 'Zelle', venmo: 'Venmo', applecash: 'Apple Cash' }[o.method]} ${t('pay.to')}`),
     el('div', { class: 'pay-code' }, el('b', { text: o.method === 'venmo' && !isPhone(o.handle) ? `@${o.handle}` : o.handle }), o.payee ? el('span', { class: 'muted', text: o.payee }) : null, copyBtn(o.handle)),
     el('p', { class: 'pay-line' }, `${t('pay.note')}:`),

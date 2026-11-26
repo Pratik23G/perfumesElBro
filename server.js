@@ -18,11 +18,12 @@ const stripe = process.env.STRIPE_SECRET_KEY ? new Stripe(process.env.STRIPE_SEC
 const placeholderOn = !PROD && !!process.env.DEV_PLACEHOLDER_PRICES;
 const PLACEHOLDER_CENTS = 4990;
 
-// manual payment handles: Zelle (email or phone) and Venmo (@username). Env wins over site.config.json.
+// manual payment handles: Zelle (email or phone), Apple Cash (phone), cash on delivery, and optionally Venmo (@username). Env wins over site.config.json.
 const PAY = {
   zelle: (process.env.ZELLE_ID || config.payments?.zelle || '').trim(),
   zelleName: (process.env.ZELLE_NAME || config.payments?.zelleName || '').trim(),
   applecash: (process.env.APPLECASH_ID || config.payments?.applecash || '').trim(),
+  cash: (process.env.CASH_ON_DELIVERY === '0' ? false : (process.env.CASH_ON_DELIVERY === '1' || config.payments?.cash)) ? 'cash' : '',
   venmo: (process.env.VENMO_HANDLE || config.payments?.venmo || '').trim().replace(/^@/, ''),
 };
 
@@ -151,7 +152,7 @@ app.get('/api/config', (_req, res) => {
     socials: Object.fromEntries(Object.entries(config.socials).filter(([, v]) => v)),
     spotlight: config.spotlight || {},
     stripeEnabled: !!stripe,
-    payments: { zelle: PAY.zelle, zelleName: PAY.zelleName, venmo: PAY.venmo, applecash: PAY.applecash },
+    payments: { zelle: PAY.zelle, zelleName: PAY.zelleName, venmo: PAY.venmo, applecash: PAY.applecash, cash: !!PAY.cash },
     shippingCents: Number(process.env.SHIPPING_CENTS) || 0,
     freeShippingOverCents: Number(process.env.FREE_SHIPPING_OVER_CENTS) || 0,
     placeholderPrices: placeholderOn,
@@ -272,7 +273,7 @@ app.post('/api/checkout', async (req, res) => {
   }
 });
 
-// ---- manual payments (Zelle / Venmo) ---------------------------------------
+// ---- manual payments (Zelle / Apple Cash / cash) ---------------------------------------
 // The customer sends the money from their own app with the order code as the note;
 // the order stays "awaiting_*" until the owner marks it paid (PATCH /api/orders/:id/paid).
 const clean = (v, n) => String(v ?? '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, n);
@@ -284,7 +285,7 @@ const isAdmin = req => {
 };
 app.post('/api/orders/manual', (req, res) => {
   const b = req.body || {};
-  const method = ['venmo', 'zelle', 'applecash'].includes(b.method) ? b.method : null;
+  const method = ['venmo', 'zelle', 'applecash', 'cash'].includes(b.method) ? b.method : null;
   if (!method || !PAY[method]) return res.status(400).json({ error: 'method_unavailable' });
   if (rateLimited(req.ip, 6, 3600e3)) return res.status(429).json({ error: 'rate_limited' });
   const lines = []; let subtotal = 0;
@@ -313,7 +314,7 @@ app.post('/api/orders/manual', (req, res) => {
 app.get('/api/orders', (req, res) => {
   if (!isAdmin(req)) return res.status(401).json({ error: 'unauthorized' });
   res.json({
-    owner: config.owner, brand: config.brand || 'Perfumes El Bro', pay: { zelle: PAY.zelle, venmo: PAY.venmo, applecash: PAY.applecash },
+    owner: config.owner, brand: config.brand || 'Perfumes El Bro', pay: { zelle: PAY.zelle, venmo: PAY.venmo, applecash: PAY.applecash, cash: !!PAY.cash },
     orders: db.prepare('SELECT * FROM orders ORDER BY created_at DESC LIMIT 200').all().map(o => ({
       id: o.id, name: o.name, totalCents: o.amount_total, status: o.payment_status, createdAt: o.created_at,
       shipping: JSON.parse(o.shipping_json || 'null'),
