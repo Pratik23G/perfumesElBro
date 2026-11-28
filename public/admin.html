@@ -139,6 +139,7 @@ $('#help').textContent = touch ? 'Pick the customer language, then tap Text. Mes
 const setLang = l => { lang = localStorage.lang = l; $('#lEn').className = l === 'en' ? 'pri' : ''; $('#lEs').className = l === 'es' ? 'pri' : ''; if (data) render(); };
 $('#lEn').onclick = () => setLang('en'); $('#lEs').onclick = () => setLang('es'); setLang(lang);
 if (localStorage.tok) load();
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 setInterval(() => { if (data && !document.activeElement?.matches('input')) load(); }, 30000);
 </script>
 </body>

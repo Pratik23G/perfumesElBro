@@ -1,6 +1,7 @@
 {
   "name": "Pedidos \u00b7 Perfumes El Bro",
   "short_name": "Pedidos",
+  "id": "/admin",
   "start_url": "/admin",
   "scope": "/",
   "display": "standalone",
